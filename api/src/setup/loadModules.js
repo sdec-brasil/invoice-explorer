@@ -3,19 +3,12 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import passport from 'passport';
-import session from 'express-session';
 import path from 'path';
-import setupPassport from './passport';
-import sequelizeConnection from './databaseConnection';
 
 
 // App Imports
 import { accessTokens } from '../utils/db';
-import { db, sessions } from '../config/config';
-
-// Session Sequelize
-const SessionStore = require('express-session-sequelize')(session.Store);
+import { db } from '../config/config';
 
 // Load express modules
 export default function (server) {
@@ -32,25 +25,6 @@ export default function (server) {
 
   // Request body cookie parser
   server.use(cookieParser());
-
-  // Use Sequelize to Store Sessions
-  const sequelizeSessionStore = new SessionStore({
-    db: sequelizeConnection,
-  });
-
-  // Use sessions as middleware
-  server.use(session({
-    saveUninitialized: true,
-    resave: true,
-    secret: sessions.secret,
-    key: 'authorization.sid',
-    cookie: { maxAge: sessions.maxAge },
-    store: sequelizeSessionStore,
-  }));
-
-  // Use Passport
-  server.use(passport.initialize());
-  server.use(passport.session());
 
   // HTTP logger
   if (process.env.NODE_ENV !== 'test') server.use(morgan('tiny'));
