@@ -67,7 +67,7 @@ INFO - Server started on port 3000.
       └── README.md
 
 ## 📜 License
-Copyright (c) 2017-18 Atul Yadav http://github.com/atulmy (Boilerplate)
+Copyright (c) 2017-18 Atul Yadav http://github.com/atulmy (Boilerplate)  
 Copyright (c) 2019 SDEC-Brasil (Tiago Loriato, Francisco Thiesen, David Beyda)
 
 The MIT License (http://www.opensource.org/licenses/mit-license.php)
