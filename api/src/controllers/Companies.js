@@ -11,10 +11,6 @@ export default class CompanyController {
     }
   }
 
-  async post(req, res) {
-    throw new Error('Not implemented');
-  }
-
   async getById(req, res, next) {
     try {
       const response = await service.getCompany(req);
@@ -22,9 +18,5 @@ export default class CompanyController {
     } catch (err) {
       next(err);
     }
-  }
-
-  async update(req, res) {
-    throw new Error('Not implemented');
   }
 }

@@ -1,9 +1,7 @@
 import ResponseList from '../../utils/response';
 import { limitSettings } from '../../config/config';
 import models from '../../models';
-import {
-  serializers, treatNestedFilters, customErr, query, errors,
-} from '../../utils';
+import { serializers, treatNestedFilters, errors } from '../../utils';
 
 
 const sqs = require('sequelize-querystring');
@@ -60,7 +58,6 @@ const listInvoices = (req) => {
   });
 };
 
-
 const getInvoice = async req => models.invoice.findByPk(req.params.txid)
   .then((inv) => {
     if (inv) {
@@ -69,77 +66,7 @@ const getInvoice = async req => models.invoice.findByPk(req.params.txid)
     throw new errors.NotFoundError('Invoice', `txId ${req.params.txid}`);
   });
 
-
-const postInvoice = async (req) => {
-  const tk = req.headers.authorization.split(' ')[1];
-  const token = await query.accessTokens.findByToken(tk);
-  const user = await models.user.findByPk(token.user_id);
-  if (user === null) {
-    throw new Error('O usuário ao qual seu token se refere não foi encontrado.');
-  }
-  if (user.empresaCnpj === null) {
-    throw new Error('Esse usuário não pertence à uma empresa, logo não pode emitir notas fiscais');
-  }
-
-  const invoiceInfo = serializers.invoice.deserialize(req.body);
-
-
-  const empresa = await models.empresa.findByPk(user.empresaCnpj, { raw: true });
-  invoiceInfo.enderecoEmissor = empresa.enderecoBlockchain;
-
-  const lastBlock = await models.block.findOne({ raw: true });
-  invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;
-
-  const inv = await models.invoice.create(invoiceInfo);
-  return { code: 201, data: serializers.invoice.serialize(inv) };
-};
-
-
-const replaceInvoice = async (req) => {
-  const tk = req.headers.authorization.split(' ')[1];
-  const token = await query.accessTokens.findByToken(tk);
-  const user = await models.user.findByPk(token.user_id);
-  if (user === null) {
-    throw new errors.AuthorizationError('O usuário ao qual seu token se refere não foi encontrado.');
-  }
-  if (user.empresaCnpj === null) {
-    throw new errors.AuthorizationError('Esse usuário não pertence à uma empresa, logo não pode emitir notas fiscais');
-  }
-
-  const oldInvoice = await models.invoice.findByPk(req.params.txid, { raw: true });
-  if (oldInvoice === null) {
-    throw new errors.NotFoundError('Invoice', `txid ${req.params.txid}`);
-  }
-
-  const invoiceInfo = serializers.invoice.deserialize(req.body);
-
-  const empresa = await models.empresa.findByPk(user.empresaCnpj, { raw: true });
-  if (oldInvoice.enderecoEmissor !== empresa.enderecoBlockchain) {
-    throw new errors.AuthorizationError('A invoice que se quer alterar não foi emitida pela sua empresa.');
-  }
-  invoiceInfo.enderecoEmissor = empresa.enderecoBlockchain;
-
-  const lastBlock = await models.block.findOne({ raw: true });
-  invoiceInfo.blocoConfirmacaoId = lastBlock.block_id;
-  invoiceInfo.substitutes = oldInvoice.txId;
-
-  const inv = await models.invoice.create(invoiceInfo);
-
-  await models.invoice.update(
-    { substitutedBy: inv.txId },
-    {
-      where: {
-        txId: oldInvoice.txId,
-      },
-    },
-  );
-  return { code: 201, data: serializers.invoice.serialize(inv) };
-};
-
-
 export default {
   listInvoices,
   getInvoice,
-  postInvoice,
-  replaceInvoice,
 };

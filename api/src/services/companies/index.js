@@ -17,6 +17,7 @@ const listCompanies = async (req) => {
   //     filter += `, block.block_datetime lte ${((new Date()).toISOString())}`;
   //   }
   // }
+  
   let where = null;
   try {
     where = sq.find(filter);
