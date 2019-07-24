@@ -1,12 +1,16 @@
-# SDEC: Dashboard
+# Dashboard Público
 
-🇧🇷 O repositório contém a estrutura por trás do painel de controle público do sistema fornecido pela Fundação. Aqui está armazenado ambas as API's e a interface gráfica.
+Esse repositório contém o source-code da API Pública de Resgate de Dados do Sistema, assim como a interface gráfica.
 
-🇺🇸 This repo hosts the source code behind the public explorer, containing both API's and also the GUI.
+API construída em Node + Express + GraphQL + Sequelize (MySQL).
+
+WebApp construído com React + Redux.
+
+Escritos em ES6 usando Babel + Webpack.
 
 ## 📝 Documentação
 
-A [documentação](https://sdec.readme.io) do projeto possui:
+A [documentação](https://sdec-brasil.github.io) ([repo](https://github.com/sdec-brasil/sdec-brasil.github.io)) do projeto possui:
 
 - Explicações sobre a arquitetura do sistema
 - Referência para as API's
@@ -14,24 +18,32 @@ A [documentação](https://sdec.readme.io) do projeto possui:
 - Sobre a Fundação
 - ++++
 
-## 🥣 Sopa de Letrinhas
-
-**API**: Node + Express + GraphQL + Sequelize + RestAdapter + Postgres
-**WebApp**: React + Redux
-
 ## ▶️ Rodando
-- Clone o repositório
+- Clone o repo `git clone git@github.com:sdec-brasil/dashboard-publico.git dashboard-publico`
 - Instale os módulos NPM da API `cd api` e `npm install`
 - Instale os módulos NPM do WebApp `cd web` e `npm install`
-- Modifique `/api/src/config/database.json` pelas credenciais do Banco de Dados
-- Modifique `/api/src/config/config.json` pela porta da API (opcional)
-- Modifique `/web/.env` pela porta web (opcional)
-- Rode a API `cd api` e `npm start`, visite @ http://localhost:8000/graphql/
-- Rode o Webapp `cd web` e `npm start`, visite @ http://localhost:3000/
+- Modifique `/api/src/config/database.json` para credenciais de banco de dados
+- Modique `/api/src/config/config.json` para porta da API (opcional)
+- Modifique `/web/.env` para a porta web (opcional)
+- Rode a API com `cd api` e `npm start`. Pode usar o GraphiQL em http://localhost:8000/
+- Rode o Webapp com `cd web` e `npm start`, navegue em http://localhost:3000/
 
-## 🏗 Estrutura do Projeto
-    dashboard
-      ├── api 
+### Exemplos de Logs
+```
+[nodemon] starting `babel-node src/index.js --presets es2015,stage-2`
+SETUP - Connecting database...
+SETUP - Loading modules...
+SETUP - GraphQL...
+SETUP - Syncing database tables...
+INFO - Database connected.
+INFO - Database sync complete.
+SETUP - Starting server...
+INFO - Server started on port 3000.
+```
+
+## 🏗 Estrutura do Repositório
+    dashboard-publico
+      ├── api (api.example.com)
       │   ├── src
       │   │   ├── config
       │   │   ├── models
@@ -41,7 +53,7 @@ A [documentação](https://sdec.readme.io) do projeto possui:
       │   │
       │   └── package.json
       │
-      ├── web 
+      ├── web (example.com)
       │   ├── public
       │   ├── src
       │   │   ├── components
@@ -53,3 +65,9 @@ A [documentação](https://sdec.readme.io) do projeto possui:
       │
       ├── .gitignore
       └── README.md
+
+## 📜 License
+Copyright (c) 2017-18 Atul Yadav http://github.com/atulmy (Boilerplate)
+Copyright (c) 2019 SDEC-Brasil (Tiago Loriato, Francisco Thiesen, David Beyda)
+
+The MIT License (http://www.opensource.org/licenses/mit-license.php)
