@@ -3,11 +3,13 @@ import express from 'express';
 
 // App Imports
 import setupLoadModules from './setup/loadModules';
+
 // import setupGraphQL from './setup/graphql';
 import setupRestAPI from './setup/restAPI';
 import setupStartServer from './setup/startServer';
 import syncDatabase from './setup/syncDatabase';
 import setupErrorHandlers from './setup/errorHandlers';
+import subscribeRedis from './setup/subscribeRedis';
 
 // Create express server
 const server = express();
@@ -29,6 +31,9 @@ syncDatabase();
 
 // Start server
 setupStartServer(server);
+
+// Subscribe to Redis Messages
+subscribeRedis();
 
 
 export default server;
