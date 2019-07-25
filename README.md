@@ -10,12 +10,11 @@ Escritos em ES6 usando Babel + Webpack.
 
 ## 📝 Documentação
 
-A [documentação](https://sdec-brasil.github.io) ([repo](https://github.com/sdec-brasil/sdec-brasil.github.io)) do projeto possui:
+A [documentação](https://sdec-brasil.github.io/docs/) ([repo](https://github.com/sdec-brasil/docs)) do projeto possui:
 
 - Explicações sobre a arquitetura do sistema
 - Referência para as API's
 - Fluxos para as diferentes ações do sistema
-- Sobre a Fundação
 - ++++
 
 ## ▶️ Rodando
