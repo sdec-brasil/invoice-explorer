@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@2fd/graphdoc": "^2.4.0",
+    "@toverux/expresse": "^2.4.0",
     "babel-jest": "^24.8.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",

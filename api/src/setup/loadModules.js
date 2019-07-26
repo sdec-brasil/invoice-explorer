@@ -5,10 +5,8 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 
-
 // App Imports
-import { accessTokens } from '../utils/db';
-import { db } from '../config/config';
+import { hub, hubMiddleware } from './sseHub';
 
 // Load express modules
 export default function (server) {
