@@ -7,7 +7,5 @@ export default {
   // Pega nota fiscal pelo txid
   'GET /invoices/:txid': {
     path: 'Invoices.getByTxId',
-    middlewares: [
-    ],
   },
 };
