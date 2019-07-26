@@ -11,9 +11,9 @@ export default function () {
   const client = redis.createClient({ host, port, db });
 
   client.on('pmessage', (pattern, channel, message) => {
-    if (channel.includes('company:new:')) {
-      hub.event('eventname', { data: message });
-      console.log(`INFO - Nova Empresa (${channel.slice(-14)}) | TxID: ${message}`);
+    // if channel == 'company:new:*'
+    if (channel[6] === 'y' && channel[8] === 'n') {
+      hub.event(channel.slice(-14), message);
     }
   });
 

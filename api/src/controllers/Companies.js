@@ -19,8 +19,4 @@ export default class CompanyController {
       next(err);
     }
   }
-
-  async events(req, res) {
-    res.sse.event('subscribed:company', Date.now());
-  }
 }
