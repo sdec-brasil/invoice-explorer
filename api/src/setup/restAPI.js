@@ -5,7 +5,9 @@ import childProcess from 'child_process';
 // App Imports
 import routes from '../routes';
 
-import { hub, hubMiddleware } from './sseHub';
+import {
+  invoiceHub, companyHub, simulatorHub, hubMiddleware,
+} from './sseHub';
 
 // Setup RestAPI
 export default function (server) {
@@ -15,17 +17,17 @@ export default function (server) {
   const mappedRoutes = mapRoutes(routes, 'src/controllers/');
 
   // Subscribe to companies related events
-  server.get('/v1/events/invoices', hubMiddleware(hub), (req, res) => {
+  server.get('/v1/events/companies', hubMiddleware(companyHub), (req, res) => {
     res.sse.event('company:subscribed', Date.now());
   });
 
   // Subscribe to invoice related events
-  server.get('/v1/events/invoices', hubMiddleware(hub), (req, res) => {
+  server.get('/v1/events/invoices', hubMiddleware(invoiceHub), (req, res) => {
     res.sse.event('invoice:subscribed', Date.now());
   });
 
   // Simulator for debug
-  server.get('/v1/events/simulator/:time', hubMiddleware(hub), (req, res) => {
+  server.get('/v1/events/simulator/:time', hubMiddleware(simulatorHub), (req, res) => {
     res.sse.event('simulator:started', `${Number(req.params.time) * 60} segundos`);
 
     let directory = __dirname.split('/');
@@ -34,7 +36,7 @@ export default function (server) {
     const simulator = childProcess.fork(directory, [Number(req.params.time)], { stdio: 'pipe' });
 
     simulator.stdout.on('data', (data) => {
-      hub.event('simulator:log', data);
+      simulatorHub.event('simulator:log', data);
     });
   });
 

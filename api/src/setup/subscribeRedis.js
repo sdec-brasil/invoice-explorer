@@ -3,7 +3,7 @@ import redis from 'redis';
 
 // App Imports
 import { configRedis } from '../config/config';
-import { hub } from './sseHub';
+import { invoiceHub, companyHub, simulatorHub } from './sseHub';
 
 
 export default function () {
@@ -11,10 +11,14 @@ export default function () {
   const client = redis.createClient({ host, port, db });
 
   client.on('pmessage', (pattern, channel, message) => {
-    hub.event(channel, message);
+    if (channel.includes('company')) {
+      companyHub.event(channel, message);
+    } else if (channel.includes('invoice')) {
+      invoiceHub.event(channel, message);
+    } else if (channel.includes('simulator')) {
+      simulatorHub.event(channel, message);
+    }
   });
 
-  client.psubscribe('company:new:*');
-  client.psubscribe('invoice:new:*');
-  client.psubscribe('invoice:update:*');
+  client.psubscribe('*');
 }
