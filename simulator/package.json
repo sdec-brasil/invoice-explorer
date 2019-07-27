@@ -1,0 +1,20 @@
+{
+  "name": "simulator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bip39": "^2.5.0",
+    "eslint": "^5.15.3",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "leite": "^0.2.0",
+    "lodash": "^4.17.11",
+    "multinodejs": "^2.0.0"
+  }
+}
