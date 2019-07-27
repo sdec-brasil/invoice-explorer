@@ -31,7 +31,7 @@ export default function (server) {
     let directory = __dirname.split('/');
     directory.splice(-3);
     directory = `${directory.join('/')}/simulator/src/main.js`;
-    const simulator = childProcess.fork(directory, [Number(req.params.time) * 60], { stdio: 'pipe' });
+    const simulator = childProcess.fork(directory, [Number(req.params.time)], { stdio: 'pipe' });
 
     simulator.stdout.on('data', (data) => {
       hub.event('simulator:log', data);
