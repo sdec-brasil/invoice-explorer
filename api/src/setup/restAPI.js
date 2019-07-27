@@ -13,9 +13,14 @@ export default function (server) {
   // Get all our routes and pair them with our controllers
   const mappedRoutes = mapRoutes(routes, 'src/controllers/');
 
-  // Se inscreve em eventos relacionados à empresas
+  // Subscribe to companies related events
   server.get('/v1/companies/events', hubMiddleware(hub), (req, res) => {
     res.sse.event('company:subscribed', Date.now());
+  });
+
+  // Subscribe to invoice related events
+  server.get('/v1/invoice/events', hubMiddleware(hub), (req, res) => {
+    res.sse.event('invoice:subscribed', Date.now());
   });
 
   // Map our rotes to the /v1 endpoint

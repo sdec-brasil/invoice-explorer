@@ -11,11 +11,10 @@ export default function () {
   const client = redis.createClient({ host, port, db });
 
   client.on('pmessage', (pattern, channel, message) => {
-    // if channel == 'company:new:*'
-    if (channel[6] === 'y' && channel[8] === 'n') {
-      hub.event(channel.slice(-14), message);
-    }
+    hub.event(channel, message);
   });
 
   client.psubscribe('company:new:*');
+  client.psubscribe('invoice:new:*');
+  client.psubscribe('invoice:update:*');
 }
