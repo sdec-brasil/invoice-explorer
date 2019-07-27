@@ -15,17 +15,17 @@ export default function (server) {
   const mappedRoutes = mapRoutes(routes, 'src/controllers/');
 
   // Subscribe to companies related events
-  server.get('/v1/companies/events', hubMiddleware(hub), (req, res) => {
+  server.get('/v1/events/invoices', hubMiddleware(hub), (req, res) => {
     res.sse.event('company:subscribed', Date.now());
   });
 
   // Subscribe to invoice related events
-  server.get('/v1/invoice/events', hubMiddleware(hub), (req, res) => {
+  server.get('/v1/events/invoices', hubMiddleware(hub), (req, res) => {
     res.sse.event('invoice:subscribed', Date.now());
   });
 
   // Simulator for debug
-  server.get('/v1/simulator/:time', hubMiddleware(hub), (req, res) => {
+  server.get('/v1/events/simulator/:time', hubMiddleware(hub), (req, res) => {
     res.sse.event('simulator:started', `${Number(req.params.time) * 60} segundos`);
 
     let directory = __dirname.split('/');
