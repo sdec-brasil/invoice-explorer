@@ -33,7 +33,7 @@ syncDatabase();
 setupStartServer(server);
 
 // Subscribe to Redis Messages
-subscribeRedis();
+// subscribeRedis();
 
 
 export default server;
