@@ -60,7 +60,7 @@ class Enterprise {
 
     if (this.registered) {
       console.log('Registrando Nota');
-      return this.node.publishFrom([addr, stream, note.meta, note.note])
+      return this.node.publishFrom([addr, stream, note.meta, { json: { ...note.note.json, cnpj: this.json.cnpj } } ])
         .then((txid) => {
           const json = JSON.stringify(note);
           console.log(`\t Nota registrada | txid: ${txid}`);

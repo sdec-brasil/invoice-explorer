@@ -17,7 +17,7 @@ const sz = {
   cepEnd: 8,
   email: 80,
   tel: 20,
-  id: 14,
+  id: 18,
   endBlock: 38,
 };
 
@@ -70,7 +70,7 @@ const empresa = {
     return fantasia;
   },
   identificacao: () => {
-    const cnpj = `${leite.empresa.cnpj()}`;
+    const cnpj = `${leite.empresa.cnpj({formatado: true})}`;
     constraint(cnpj, sz.id);
     return cnpj;
   },
