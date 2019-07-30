@@ -82,7 +82,7 @@ class Enterprise {
     const addr = this.json.endBlock;
     const newNote = new Note(this.json.endBlock);
     newNote.replaceOldNote(oldNote.txid);
-    this.node.publishFrom([addr, stream, newNote.meta, newNote.note])
+    this.node.publishFrom([addr, stream, newNote.meta, { json: { ...newNote.note.json, cnpj: this.json.cnpj } }])
       .then((txid) => {
         const json = JSON.stringify(newNote);
         console.log(`\t Nota substituta registrada | txid: ${txid}`);
