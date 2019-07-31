@@ -7,11 +7,6 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    enderecoBlockchain: {
-      type: DataTypes.STRING(45),
-      unique: true,
-      allowNull: false,
-    },
     razaoSocial: {
       type: DataTypes.STRING(150),
       unique: true,
@@ -68,6 +63,11 @@ export default function (sequelize, DataTypes) {
     freezeTableName: true,
     timestamps: false,
   });
+
+  empresa.associate = (models) => {
+    empresa.belongsToMany(models.emissor, { as: 'Emissores', through: 'emissoresEmpresa' });
+    empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'name', allowNull: false } });
+  };
 
   return empresa;
 }

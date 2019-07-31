@@ -235,7 +235,7 @@ export default function (sequelize, DataTypes) {
       defaultValue: 0,
     },
     tomadorEncriptado: {
-      type: DataTypes.TEXT('long'),
+      type: DataTypes.TEXT,
       allowNull: true,
     },
   },
@@ -247,8 +247,10 @@ export default function (sequelize, DataTypes) {
   });
 
   invoice.associate = (models) => {
+    invoice.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'enderecoEmissor', allowNull: false } });
+    invoice.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'cnpj', allowNull: false } });
+
     invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraIncidencia', allowNull: false } });
-    invoice.belongsTo(models.empresa, { targetKey: 'enderecoBlockchain', as: 'emissor', foreignKey: { name: 'enderecoEmissor', allowNull: false } });
     invoice.belongsTo(models.block, { targetKey: 'block_id', as: 'block', foreignKey: { name: 'blocoConfirmacaoId', allowNull: true } });
   };
 

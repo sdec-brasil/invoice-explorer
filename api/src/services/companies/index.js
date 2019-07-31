@@ -17,7 +17,7 @@ const listCompanies = async (req) => {
   //     filter += `, block.block_datetime lte ${((new Date()).toISOString())}`;
   //   }
   // }
-  
+
   let where = null;
   try {
     where = sq.find(filter);
@@ -41,7 +41,7 @@ const listCompanies = async (req) => {
 
 const getCompany = async req =>
   // search by cnpj
-  models.empresa.findByPk(req.params.id)
+  models.empresa.findByPk(req.params.id) // TODO @dbeyda: Mas e se a pessoa passou um CNPJ e simplesmente não existe?
     .then((companyByCnpj) => {
       if (companyByCnpj) {
         return { code: 200, data: companyByCnpj };
@@ -50,8 +50,8 @@ const getCompany = async req =>
       return models.empresa.findOne({
         where: { enderecoBlockchain: req.params.id },
       })
-        .then((companyByAddress) => {
-          if (companyByAddress) {
+        .then((companyByAddress) => { // TODO @dbeyda: Isso aqui não é melhor usar o .catch? (provavelmente que nem o the cima?)
+          if (companyByAddress) { // TODO (cont): .then((x) => if (x) ... ) ----> .then((sucesso) => ... ).catch((err) => ... )
             return { code: 200, data: companyByAddress };
           }
           throw new errors.NotFoundError('Company', `CNPJ or blockchainAddress ${req.params.id}`);
