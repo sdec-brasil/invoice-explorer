@@ -66,7 +66,7 @@ export default function (sequelize, DataTypes) {
 
   empresa.associate = (models) => {
     empresa.belongsToMany(models.emissor, { as: 'Emissores', through: 'emissoresEmpresa' });
-    empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'name', allowNull: false } });
+    empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'dono', allowNull: false } });
   };
 
   return empresa;

@@ -44,7 +44,6 @@ const listInvoices = (req) => {
     },
     {
       model: models.empresa,
-      as: 'emissor',
       attributes: [],
     }],
   }).then((results) => {
