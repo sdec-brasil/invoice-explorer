@@ -14,30 +14,113 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
-    // ----- Campos da Prestação:
-    baseCalculo: {
-      type: DataTypes.BIGINT({ unsigned: true }),
+    nonce: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    aliqServicos: {
-      type: DataTypes.DECIMAL(10, 1),
-      allowNull: true,
-    },
-    valLiquiNfse: {
-      type: DataTypes.BIGINT({ unsigned: true }),
-      allowNull: true,
-    },
-    dataIncidencia: {
+    // ----- Campos da Prestação:
+    // campo emissor
+    dataPrestacao: {
       type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    // campo prefeituraPrestacao
+    codTributMunicipio: {
+      type: DataTypes.STRING(7),
+      allowNull: false,
+    },
+    itemLista: {
+      type: DataTypes.STRING(5),
+      allowNull: false,
+    },
+    codCnae: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    // This may need to be a table
+    codServico: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+    },
+    codNBS: {
+      type: DataTypes.STRING(9),
+      allowNull: true,
+    },
+    discriminacao: {
+      type: DataTypes.STRING(2000),
       allowNull: false,
     },
     valServicos: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: false,
     },
+    descontoIncond: {
+      type: DataTypes.BIGINT({ unsigned: true }),
+      allowNull: true,
+    },
+    descontoCond: {
+      type: DataTypes.BIGINT({ unsigned: true }),
+      allowNull: true,
+    },
+    exigibilidadeISS: {
+      // * `1` - Exigível
+      // * `2` - Não incidência
+      // * `3` - Isenção
+      // * `4` - Exportação
+      // * `5` - Imunidade
+      // * `6` - Exigibilidade Suspensa por Decisão Judicial
+      // * `7` - Exigibilidade Suspensa por Processo Administrativo
+      type: DataTypes.TINYINT({ unsigned: true }),
+      allowNull: false,
+    },
+    numProcesso: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+    },
     valDeducoes: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
+    },
+    baseCalculo: {
+      type: DataTypes.BIGINT({ unsigned: true }),
+      allowNull: false,
+    },
+
+    // ----- Campos de Taxas:
+    issRetido: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    respRetencao: {
+      // Informado somente se IssRetido igual a "true".
+      // A opção “2 – Intermediário” somente poderá ser selecionada
+      // se “CpfCnpjIntermediario” informado.
+      //       * `1` - Tomador
+      //       * `2` - Intermediário
+      type: DataTypes.TINYINT({ unsigned: true }),
+      allowNull: true,
+    },
+    regimeEspTribut: {
+      // * `1` – Microempresa Municipal
+      // * `2` – Estimativa
+      // * `3` – Sociedade de Profissionais
+      // * `4` – Cooperativa
+      // * `5` – Microempresário Individual (MEI)
+      // * `6` – Microempresário e Empresa de Pequeno Porte (ME EPP).
+      type: DataTypes.TINYINT({ unsigned: true }),
+      allowNull: true,
+    },
+    incentivoFiscal: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    aliqServicos: {
+      type: DataTypes.DECIMAL(10, 1),
+      allowNull: true,
+    },
+    valIss: {
+      type: DataTypes.BIGINT({ unsigned: true }),
+      allowNull: false,
     },
     valPis: {
       type: DataTypes.BIGINT({ unsigned: true }),
@@ -67,86 +150,11 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valIss: {
-      type: DataTypes.BIGINT({ unsigned: true }),
-      allowNull: false,
-    },
-    descontoIncond: {
+    valLiquiNfse: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    descontoCond: {
-      type: DataTypes.BIGINT({ unsigned: true }),
-      allowNull: true,
-    },
-    issRetido: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    respRetencao: {
-      // Informado somente se IssRetido igual a "true".
-      // A opção “2 – Intermediário” somente poderá ser selecionada
-      // se “CpfCnpjIntermediario” informado.
-      //       * `1` - Tomador
-      //       * `2` - Intermediário
-      type: DataTypes.TINYINT({ unsigned: true }),
-      allowNull: true,
-    },
-    itemLista: {
-      type: DataTypes.STRING(5),
-      allowNull: false,
-    },
-    codCnae: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-    },
-    // This may need to be a table
-    codServico: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-    },
-    codNBS: {
-      type: DataTypes.STRING(9),
-      allowNull: true,
-    },
-    discriminacao: {
-      type: DataTypes.STRING(2000),
-      allowNull: false,
-    },
-    exigibilidadeISS: {
-      // * `1` - Exigível
-      // * `2` - Não incidência
-      // * `3` - Isenção
-      // * `4` - Exportação
-      // * `5` - Imunidade
-      // * `6` - Exigibilidade Suspensa por Decisão Judicial
-      // * `7` - Exigibilidade Suspensa por Processo Administrativo
-      type: DataTypes.TINYINT({ unsigned: true }),
-      allowNull: false,
-    },
-    numProcesso: {
-      type: DataTypes.STRING(30),
-      allowNull: true,
-    },
-    regimeEspTribut: {
-      // * `1` – Microempresa Municipal
-      // * `2` – Estimativa
-      // * `3` – Sociedade de Profissionais
-      // * `4` – Cooperativa
-      // * `5` – Microempresário Individual (MEI)
-      // * `6` – Microempresário e Empresa de Pequeno Porte (ME EPP).
-      type: DataTypes.TINYINT({ unsigned: true }),
-      allowNull: true,
-    },
-    optanteSimplesNacional: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
-    incentivoFiscal: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
+
     // ----- Campos do Tomador:
     identificacaoTomador: {
       type: DataTypes.STRING(14),
@@ -247,10 +255,10 @@ export default function (sequelize, DataTypes) {
   });
 
   invoice.associate = (models) => {
-    invoice.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'enderecoEmissor', allowNull: false } });
+    invoice.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'emissor', allowNull: false } });
     invoice.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'cnpj', allowNull: false } });
 
-    invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraIncidencia', allowNull: false } });
+    invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraPrestacao', allowNull: false } });
     invoice.belongsTo(models.block, { targetKey: 'block_id', as: 'block', foreignKey: { name: 'blocoConfirmacaoId', allowNull: true } });
   };
 

@@ -41,7 +41,7 @@ export default function (sequelize, DataTypes) {
       allowNull: false,
     },
     cidadeEnd: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(7),
       allowNull: false,
     },
     estadoEnd: {
