@@ -7,45 +7,58 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    razaoSocial: {
+    codCnae: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    razao: {
       type: DataTypes.STRING(150),
       unique: true,
       allowNull: false,
     },
-    nomeFantasia: {
+    fantasia: {
       type: DataTypes.STRING(60),
+      allowNull: true,
+    },
+    cepEnd: {
+      type: DataTypes.STRING(8),
       allowNull: false,
     },
-    enderecoEmpresa: {
+    logEnd: {
       type: DataTypes.STRING(125),
       allowNull: false,
     },
-    numeroEndereco: {
+    numEnd: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+    },
+    compEnd: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+    },
+    bairroEnd: {
+      type: DataTypes.STRING(60),
+      allowNull: false,
+    },
+    cidadeEnd: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    complementoEndereco: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-    },
-    bairroEndereco: {
-      type: DataTypes.STRING(60),
-      allowNull: false,
-    },
-    cidadeEndereco: {
-      type: DataTypes.STRING(60),
-      allowNull: false,
-    },
-    unidadeFederacao: {
+    estadoEnd: {
       type: DataTypes.STRING(2),
       allowNull: false,
     },
-    paisEndereco: {
-      type: DataTypes.STRING(4),
-      allowNull: true,
+    regTrib: {
+      // 1 - MEI;
+      // 2 - Simples Nacional;
+      // 3 - Lucro Presumido;
+      // 4 - Lucro Real;
+      type: DataTypes.TINYINT({ unsigned: true }),
+      allowNull: false,
     },
-    cep: {
-      type: DataTypes.STRING(8),
+    ccm: {
+      // codigo de cadastro no municipio
+      type: DataTypes.STRING(128),
       allowNull: false,
     },
     email: {
@@ -55,6 +68,10 @@ export default function (sequelize, DataTypes) {
     telefone: {
       type: DataTypes.STRING(20),
       allowNull: true,
+    },
+    endBlock: {
+      type: DataTypes.STRING(64),
+      allowNull: false,
     },
   },
   {
