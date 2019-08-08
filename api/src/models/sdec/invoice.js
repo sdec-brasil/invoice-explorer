@@ -254,7 +254,7 @@ export default function (sequelize, DataTypes) {
   invoice.associate = (models) => {
     invoice.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'emissorId', allowNull: false } });
     invoice.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'cnpj', allowNull: false } });
-
+    invoice.belongsTo(models.nota_pagamento, { targetKey: 'guid', foreignKey: { name: 'notaPagamentoId', allowNull: true } });
     invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraPrestacao', allowNull: false } });
     invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'codTributMunicipio', allowNull: false } });
     invoice.belongsTo(models.block, { targetKey: 'block_id', as: 'block', foreignKey: { name: 'blocoConfirmacaoId', allowNull: true } });
