@@ -123,24 +123,21 @@ const getGeneralStats = async (req) => {
         // biggest emissor in values
         promises.push(models.invoice.findAll({
           raw: true,
-          attributes: ['emissorId',
+          attributes: ['cnpj',
             [sequelize.fn('SUM', sequelize.col('valIss')), 'sumIss'],
           ],
           where,
-          group: ['emissorId'],
+          group: ['cnpj'],
           order: sequelize.literal('sumIss DESC'),
           limit: 1,
         }).then(async (issuer) => {
           if (issuer.length) {
-            const company = await models.empresa.findOne({
-              raw: true,
-              where: { enderecoBlockchain: issuer[0].emissorId },
-            });
+            const company = await models.empresa.findByPk(issuer[0].cnpj);
             data.biggestIssuer = {
-              cnpj: company.cnpj,
-              enderecoBlockchain: company.enderecoBlockchain,
-              razaoSocial: company.razaoSocial,
-              nomeFantasia: company.nomeFantasia,
+              cnpj: company.get('cnpj'),
+              endBlock: company.get('endBlock'),
+              razaoSocial: company.get('razao'),
+              nomeFantasia: company.get('fantasia'),
             };
           } else {
             data.biggestIssuer = null;
