@@ -270,10 +270,49 @@ const getStatusSplit = async (req) => {
 };
 
 
+const getLateInvoices = async req => models.prefeitura.findByPk(req.params.id,
+  {
+    raw: true,
+    include: [
+      {
+        model: models.municipio,
+        include: [
+          models.estado, models.regiao,
+        ],
+      },
+    ],
+  })
+  .then(async (city) => {
+    if (city) {
+      const where = {
+        prefeituraPrestacao: city.codigoMunicipio,
+        estado: 1, // atrasados
+      };
+      return models.invoice.findAll(
+        {
+          raw: true,
+          attributes: [
+            [sequelize.fn('SUM', sequelize.col('valIss')), 'lateIssValue'],
+            [sequelize.fn('COUNT', sequelize.col('txId')), 'lateIssCount'],
+          ],
+          where,
+        },
+      ).then((inv) => {
+        const data = {};
+        data.lateIssValue = parseInt(inv[0].lateIssValue, 10) || 0;
+        data.lateIssCount = inv[0].lateIssCount;
+        return { code: 200, data };
+      });
+    }
+    throw new errors.NotFoundError('City', `id ${req.params.id}`);
+  });
+
+
 export default {
   listCities,
   getCity,
   getGeneralStats,
   getDailyIssuing,
   getStatusSplit,
+  getLateInvoices,
 };
