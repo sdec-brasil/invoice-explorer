@@ -311,13 +311,13 @@ const getLateInvoices = async req => models.prefeitura.findByPk(req.params.id,
 
 
 const getExpectedRevenue = async (req) => {
-  const { month, year } = req.query;
-  let dataPrestacao;
-  if (month && year) {
-    const firstDay = new Date(year, month - 1, 1);
-    const lastDay = new Date(year, month, 0);
-    dataPrestacao = { [Op.between]: [firstDay, lastDay] };
-  }
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+
   return models.prefeitura.findByPk(req.params.id,
     {
       raw: true,
@@ -332,31 +332,49 @@ const getExpectedRevenue = async (req) => {
     })
     .then(async (city) => {
       if (city) {
-        const where = { codTributMunicipio: city.codigoMunicipio };
-        if (dataPrestacao) {
-          where.dataPrestacao = dataPrestacao;
-        }
-        return models.invoice.findAll(
+        const data = {};
+
+        const where = {
+          codTributMunicipio: city.codigoMunicipio,
+          dataPrestacao,
+        };
+
+        const promises = [];
+
+        promises.push(models.invoice.findAll(
           {
             raw: true,
             attributes: [
-              // calculate number of invoices
-              [sequelize.fn('COUNT', sequelize.col('txId')), 'nInvoicesPending'],
-              // calculate average iss per invoice
-              [sequelize.fn('SUM', sequelize.col('valIss')), 'expectedIssIncome'],
+              [sequelize.fn('SUM', sequelize.col('valIss')), 'alreadyPaid'],
             ],
             where: {
-              estado: 0,
+              estado: 2,
               ...where,
             },
           },
         ).then((inv) => {
-          const data = {};
-          data.nInvoicesPending = parseInt(inv[0].nInvoicesPending, 10) || 0;
-          data.expectedIssIncome = parseInt(inv[0].expectedIssIncome, 10) || 0;
-          return data;
-        })
-          .then(data => ({ code: 200, data }));
+          data.alreadyPaid = parseInt(inv[0].alreadyPaid, 10) || 0;
+        }));
+
+        promises.push(models.invoice.findAll(
+          {
+            raw: true,
+            attributes: [
+              [sequelize.fn('SUM', sequelize.col('valIss')), 'expectedMonthIncome'],
+            ],
+            where: {
+              [Op.or]: [
+                { estado: 0 },
+                { estado: 2 },
+              ],
+              ...where,
+            },
+          },
+        ).then((inv) => {
+          data.expectedMonthIncome = parseInt(inv[0].expectedMonthIncome, 10) || 0;
+        }));
+
+        return Promise.all(promises).then(() => ({ code: 200, data }));
       }
       throw new errors.NotFoundError('City', `id ${req.params.id}`);
     });
