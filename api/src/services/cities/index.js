@@ -6,6 +6,8 @@ import { treatNestedFilters, errors } from '../../utils';
 
 const sqs = require('sequelize-querystring');
 
+const { Op } = models.Sequelize;
+
 
 const listCities = async (req) => {
   const sq = sqs.withSymbolicOps(models.Sequelize, { symbolic: true });
@@ -81,7 +83,7 @@ const getGeneralStats = async (req) => {
         const data = {};
         data.city = city;
 
-        const where = { prefeituraPrestacao: city.codigoMunicipio };
+        const where = { codTributMunicipio: city.codigoMunicipio };
         if (dataPrestacao) {
           where.dataPrestacao = dataPrestacao;
         }
@@ -136,8 +138,8 @@ const getGeneralStats = async (req) => {
             data.biggestIssuer = {
               cnpj: company.get('cnpj'),
               endBlock: company.get('endBlock'),
-              razaoSocial: company.get('razao'),
-              nomeFantasia: company.get('fantasia'),
+              razao: company.get('razao'),
+              fantasia: company.get('fantasia'),
             };
           } else {
             data.biggestIssuer = null;
@@ -177,7 +179,7 @@ const getDailyIssuing = async (req) => {
         data.city = city;
 
         const where = {
-          prefeituraPrestacao: city.codigoMunicipio,
+          codTributMunicipio: city.codigoMunicipio,
         };
         if (dataPrestacao) {
           where.dataPrestacao = dataPrestacao;
@@ -245,7 +247,7 @@ const getStatusSplit = async (req) => {
         const data = {};
         data.city = city;
 
-        const where = { prefeituraPrestacao: city.codigoMunicipio };
+        const where = { codTributMunicipio: city.codigoMunicipio };
         if (dataPrestacao) {
           where.dataPrestacao = dataPrestacao;
         }
@@ -285,7 +287,7 @@ const getLateInvoices = async req => models.prefeitura.findByPk(req.params.id,
   .then(async (city) => {
     if (city) {
       const where = {
-        prefeituraPrestacao: city.codigoMunicipio,
+        codTributMunicipio: city.codigoMunicipio,
         estado: 1, // atrasados
       };
       return models.invoice.findAll(
@@ -308,6 +310,59 @@ const getLateInvoices = async req => models.prefeitura.findByPk(req.params.id,
   });
 
 
+const getExpectedRevenue = async (req) => {
+  const { month, year } = req.query;
+  let dataPrestacao;
+  if (month && year) {
+    const firstDay = new Date(year, month - 1, 1);
+    const lastDay = new Date(year, month, 0);
+    dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+  }
+  return models.prefeitura.findByPk(req.params.id,
+    {
+      raw: true,
+      include: [
+        {
+          model: models.municipio,
+          include: [
+            models.estado, models.regiao,
+          ],
+        },
+      ],
+    })
+    .then(async (city) => {
+      if (city) {
+        const where = { codTributMunicipio: city.codigoMunicipio };
+        if (dataPrestacao) {
+          where.dataPrestacao = dataPrestacao;
+        }
+        return models.invoice.findAll(
+          {
+            raw: true,
+            attributes: [
+              // calculate number of invoices
+              [sequelize.fn('COUNT', sequelize.col('txId')), 'nInvoicesPending'],
+              // calculate average iss per invoice
+              [sequelize.fn('SUM', sequelize.col('valIss')), 'expectedIssIncome'],
+            ],
+            where: {
+              estado: 0,
+              ...where,
+            },
+          },
+        ).then((inv) => {
+          const data = {};
+          data.nInvoicesPending = parseInt(inv[0].nInvoicesPending, 10) || 0;
+          data.expectedIssIncome = parseInt(inv[0].expectedIssIncome, 10) || 0;
+          return data;
+        })
+          .then(data => ({ code: 200, data }));
+      }
+      throw new errors.NotFoundError('City', `id ${req.params.id}`);
+    });
+};
+
+
 export default {
   listCities,
   getCity,
@@ -315,4 +370,5 @@ export default {
   getDailyIssuing,
   getStatusSplit,
   getLateInvoices,
+  getExpectedRevenue,
 };

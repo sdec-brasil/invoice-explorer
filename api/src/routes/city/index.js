@@ -11,9 +11,9 @@ export default {
   'GET /cities/:id/status-split': {
     path: 'Cities.statusSplit',
   },
-  // 'GET /cities/:id/expected-revenue': {
-  //   path: 'Cities.expectedRevenue',
-  // },
+  'GET /cities/:id/expected-revenue': {
+    path: 'Cities.expectedRevenue',
+  },
   'GET /cities/:id/late-invoices': {
     path: 'Cities.lateInvoices',
   },
