@@ -56,6 +56,18 @@ const utils = {
   },
   obra: () => (Math.random() * 100000).toFixed(0),
   art: () => (Math.random() * 100000).toFixed(0),
+  cnaes: () => {
+    const rad = utils.getRandomInt;
+    const length = rad(1, 5);
+    const cnaeList = [];
+    for (let i = 0; i < length; i++) {
+      const d = rad(1,99);
+      const gc = rad(1,99);
+      const s = rad(1,99);
+      cnaeList.push(`${d < 10 ? '0' + d : d}.${gc}-${rad(1,9)}/${s < 10 ? '0' + s : s}`);
+    };
+    return cnaeList;
+  },
 };
 
 const empresa = {
@@ -126,6 +138,8 @@ const fields = {
   complemento: localizacao.complemento,
   numero: localizacao.numero,
   estado: localizacao.estado,
+
+  cnaes: utils.cnaes,
 
   email: utils.email,
   telefone: utils.telefone,

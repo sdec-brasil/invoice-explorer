@@ -1,57 +1,117 @@
 /* eslint-disable quote-props */
 const Multichain = require('multinodejs');
 const dockers = require('../utils/docker');
-const Enterprise = require('./empresa');
+const Owner = require('./owner');
+const Note = require('../utils/note');
 
 const masterPort = 8001;
 const masterPassword = 'this-is-insecure-change-it';
-const slavePort = 8002;
 
 const stream = 'events';
-const enterprises = [];
+
+const owners = [];
 const replaceableNotes = [];
+const emitters = [];
 
 // randomInt :: (Int A, Int B) -> (Int C) | A < C < B
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
+async function publishNote(master, company) {
+  try {
+    const [ address, cnpj ] = company;
+    const note = new Note(address, cnpj);
+    const timestamp = Date.now();
+    const assetname = note.note.json.cnpj.replace('.', '').replace('/','').replace('-', '') + `/NF-${timestamp}`;
+    const txid = await master.node.issueFrom([
+      address, 
+      address, 
+      {name: assetname,'open':true,'restrict':'send'},
+      0,
+      1,
+      0,
+      note.note.json
+    ]);
+    note.registerTxId(txid);
+    note.registerName(assetname);
+    console.log(`Nota registrada | TxId: ${txid} | CNPJ: ${cnpj} | Address: ${address}`);
+    if (Math.random() > 0.9) replaceableNotes.push(note);
+  } catch (e) {
+    console.log('Error | Registrar nota fiscal nova', e);
+  }
+};
+
 // printNotes :: () ~> printNotes()
-function printNotes() {
+function printNotes(master) {
   const timer = Math.random() * 2500;
   setTimeout(async () => {
-    const { length } = enterprises;
+    const { length } = emitters;
     if (length) {
       const eIndex = getRandomInt(0, length - 1);
-      enterprises[eIndex].publishNote(stream);
+      publishNote(master, emitters[eIndex]);
     }
-    printNotes();
+    printNotes(master);
   }, timer);
 }
 
-// registerEnterprises :: (Node, Node) ~> registerEnterprises(Node, Node)
-function registerEnterprises(master, slave) {
+// registerEnterprises :: (Node) ~> registerEnterprises(Node)
+function registerEnterprises(master) {
   const timer = Math.random() * 15000;
   setTimeout(async () => {
-    if (timer > 7250) {
-      const enterprise = new Enterprise(master, stream);
-      enterprises.push(enterprise);
-    } else {
-      const enterprise = new Enterprise(slave, stream);
-      enterprises.push(enterprise);
+    try {
+      const address = await master.node.getNewAddress();
+      const owner = await new Owner(address, master);
+      owners.push(owner);
+    } catch (e) {
+      console.error('Error | Registrar empresa', e);
     }
-    registerEnterprises(master, slave);
+    registerEnterprises(master);
   }, timer);
 }
 
-// replaceNotes :: (Node, Node) ~-> replaceNotes(Node, Nonde)
-function replaceNotes() {
+// replaceNotes :: (Node) ~-> replaceNotes(Node)
+function replaceNotes(master) {
   const timer = Math.random() * 15000;
   setTimeout(async () => {
     const { length } = replaceableNotes;
     if (length) {
-      const [enterprise, note] = replaceableNotes.pop();
-      enterprise.replaceNote(stream, note);
+      try {
+        const oldNote = replaceableNotes.pop();
+        const newNote = new Note(oldNote.note.emissor, oldNote.note.cnpj);
+        newNote.replaceOldNote(oldNote.txid);
+        const address = oldNote.note.emissor;
+        const txid = master.node.issueMoreFrom([
+          address,
+          oldNote.name,
+          0,
+          0,
+          note.note.json,
+        ]);
+        newNote.registerTxId(txid);
+        newNote.registerName(oldNote.name);
+        console.log(`Nota substituída | TxId: ${txid} | CNPJ: ${oldNote.note.cnpj} | Address: ${address}`);
+        if (Math.random() > 0.9) replaceNotes.push(newNote);
+      } catch (e) {
+        console.log('Error | Registrar nota fiscal substituta');
+      }
     }
     replaceNotes();
+  }, timer);
+}
+
+function registerEmitters(master) {
+  const timer = Math.random() * 35000;
+  setTimeout(async () => {
+    const { length } = owners;
+    if (length) {
+      try {
+      const address = await master.node.getNewAddress();
+      const owner = owners[getRandomInt(0, length - 1)];
+      const txid = await master.node.grantFrom([owner.json.endBlock, address, owner.constructAsset().name + '.low3', 0]);
+      emitters.push([address, owner.json.cnpj])
+    } catch (e) {
+      console.error('Error | Registrar emissor', e);
+    }
+  }
   }, timer);
 }
 
@@ -60,22 +120,7 @@ function killscript(minutes) {
 }
 
 (async (timeLimit) => {
-  let slavePassword = await dockers.exec(
-    'docker exec docker-multichain_slavenode_1 cat root/.multichain/MyChain/multichain.conf',
-  );
-  slavePassword = dockers.extractPassword(slavePassword);
-
-  const slave = {
-    node: Multichain({
-      port: slavePort,
-      host: 'localhost',
-      user: 'multichainrpc',
-      pass: slavePassword,
-    }),
-    addr: '',
-  };
-
-  slave.addr = (await slave.node.getAddresses())['0'].toString();
+  if (isNaN(timeLimit)) process.exit(-1);
 
   const master = {
     node: Multichain({
@@ -89,12 +134,11 @@ function killscript(minutes) {
 
   master.addr = (await master.node.getAddresses())['0'].toString();
 
-  await dockers.exec(`docker exec docker-multichain_masternode_1 multichain-cli MyChain grant ${slave.addr} activate,mine 0`);
-
-  registerEnterprises(master, slave);
-  printNotes();
-  replaceNotes();
+  registerEnterprises(master);
+  printNotes(master);
+  replaceNotes(master);
+  registerEmitters(master);
   killscript(Number(timeLimit));
 })(process.argv[2] || 2);
 
-module.exports.addNote = note => replaceableNotes.push(note);
+module.exports.addEmitter = (address, cnpj) => emitters.push([address, cnpj]);
