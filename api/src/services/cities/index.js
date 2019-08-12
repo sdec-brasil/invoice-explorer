@@ -381,6 +381,62 @@ const getExpectedRevenue = async (req) => {
 };
 
 
+const getPastRevenue = async (req) => {
+  const { year } = req.query;
+  const firstDay = new Date(year, 0, 1);
+  const lastDay = new Date(year, 11, 31);
+  const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+
+  return models.prefeitura.findByPk(req.params.id,
+    {
+      raw: true,
+      include: [
+        {
+          model: models.municipio,
+          include: [
+            models.estado, models.regiao,
+          ],
+        },
+      ],
+    })
+    .then(async (city) => {
+      if (city) {
+        const where = {
+          codTributMunicipio: city.codigoMunicipio,
+          dataPrestacao,
+        };
+        const data = {};
+        const promises = [];
+        promises.push(models.invoice.findAll(
+          {
+            raw: true,
+            attributes: [
+              [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
+              [sequelize.fn('MONTHNAME', sequelize.col('dataPrestacao')), 'monthName'],
+              [sequelize.fn('COUNT', sequelize.col('txId')), 'emittedInvoicesCount'],
+              [sequelize.fn('SUM', sequelize.col('valIss')), 'valIss'],
+              // [sequelize.fn('SUM', sequelize.col('valDeducoes')), 'valDeducoes'],
+            ],
+            group: ['month', 'monthName'],
+            where,
+          },
+        ).then((aggregate) => {
+          aggregate.map((obj) => {
+            data[obj.month] = {
+              emittedInvoices: obj.emittedInvoicesCount,
+              monthName: obj.monthName,
+              valIss: parseInt(obj.valIss, 10),
+              // valDeducoes: parseInt(obj.valDeducoes, 10),
+            };
+          });
+        }));
+        return Promise.all(promises).then(() => ({ code: 200, data }));
+      }
+      throw new errors.NotFoundError('City', `id ${req.params.id}`);
+    });
+};
+
+
 export default {
   listCities,
   getCity,
@@ -389,4 +445,5 @@ export default {
   getStatusSplit,
   getLateInvoices,
   getExpectedRevenue,
+  getPastRevenue,
 };

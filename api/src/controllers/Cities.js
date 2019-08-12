@@ -66,4 +66,13 @@ export default class CitiesController {
       next(err);
     }
   }
+
+  async pastRevenue(req, res, next) {
+    try {
+      const response = await service.getPastRevenue(req);
+      res.status(response.code).send(response.data);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

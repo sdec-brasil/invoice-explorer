@@ -17,4 +17,7 @@ export default {
   'GET /cities/:id/late-invoices': {
     path: 'Cities.lateInvoices',
   },
+  'GET /cities/:id/past-revenue': {
+    path: 'Cities.pastRevenue',
+  },
 };
