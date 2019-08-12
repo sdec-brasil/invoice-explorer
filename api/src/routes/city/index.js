@@ -1,3 +1,6 @@
+import { query } from 'express-validator/check';
+
+
 export default {
   'GET /cities': 'Cities.get',
   'GET /cities/:id': 'Cities.getById',
@@ -19,5 +22,8 @@ export default {
   },
   'GET /cities/:id/past-revenue': {
     path: 'Cities.pastRevenue',
+    middlewares: [
+      query('year').exists().isNumeric(),
+    ],
   },
 };

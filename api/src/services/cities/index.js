@@ -426,6 +426,29 @@ const getPastRevenue = async (req) => {
           });
         }));
 
+        // promises.push(models.invoice.findAll(
+        //   {
+        //     raw: true,
+        //     attributes: [
+        //       [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
+        //       [sequelize.fn('MONTHNAME', sequelize.col('dataPrestacao')), 'monthName'],
+        //       [sequelize.fn('SUM', sequelize.col('valIss')), 'valIss'],
+        //       // [sequelize.fn('SUM', sequelize.col('valDeducoes')), 'valDeducoes'],
+        //     ],
+        //     group: ['month', 'monthName'],
+        //     where,
+        //   },
+        // ).then((aggregate) => {
+        //   aggregate.map((obj) => {
+        //     data[obj.month] = {
+        //       emittedInvoices: obj.emittedInvoicesCount,
+        //       monthName: obj.monthName,
+        //       valIss: parseInt(obj.valIss, 10),
+        //       // valDeducoes: parseInt(obj.valDeducoes, 10),
+        //     };
+        //   });
+        // }));
+
         return Promise.all(promises).then(() => ({ code: 200, data }));
       }
       throw new errors.NotFoundError('City', `id ${req.params.id}`);
