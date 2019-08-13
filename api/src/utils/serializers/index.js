@@ -8,7 +8,7 @@ serializers.invoice.serialize = (inv) => {
     prestacao: [
       'emissor',
       'dataPrestacao',
-      'municipioPrestacao',
+      'prefeituraPrestacao',
       'codTributMunicipio',
       'itemLista',
       'codCnae',
