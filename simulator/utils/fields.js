@@ -68,7 +68,12 @@ const utils = {
     };
     return cnaeList;
   },
-  cnae: () => utils.cnaes()[0],
+  cnae: () =>{
+    const d = rad(1,99);
+    const gc = rad(1,99);
+    const s = rad(1,99);
+    return `${d < 10 ? '0' + d : d}.${gc}-${rad(1,9)}/${s < 10 ? '0' + s : s}`
+  },
 };
 
 const empresa = {

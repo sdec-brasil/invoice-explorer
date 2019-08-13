@@ -43,7 +43,7 @@ class Nota {
         cnpj: cnpj,
         emissor: addr,
         prestacao: {
-          codCnae: maybeF(fake.utils.cnae),
+          codCnae: maybeF(fake.cnae),
           codNBS: maybeF(fake.utils.nbs),
           codServico: String(fake.utils.rad(21, 48)),
           codTributMunicipio: this.prefeitura(),
@@ -68,7 +68,7 @@ class Nota {
           valIss: undefined,
           valLiquiNfse: undefined,
           valPis: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 600 }),
-          valServicos: fake.utils.reais(100, 450),
+          valServicos: fake.utils.reais(8000, 16000),
           valTotalTributos: maybeF(fake.utils.reais, { p: 0.5, min: 6, max: 1400 }),
           outrasRetencoes: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 800 }),
           incentivoFiscal: String(fake.utils.rad(1, 2)),
