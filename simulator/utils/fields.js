@@ -28,7 +28,7 @@ const constraint = (str, size) => {
 };
 
 const utils = {
-  randomReais: (min = 10, max = 500) => (Math.random() * (max - min) + min).toFixed(2),
+  randomReais: (min = 100, max = 10000) => (Math.random() * (max - min) + min).toFixed(0),
   getRandomInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
   telefone: () => {
     const tel = leite.pessoa.rg().replace(/./g, '').replace('-', '');
@@ -68,6 +68,7 @@ const utils = {
     };
     return cnaeList;
   },
+  cnae: () => utils.cnaes()[0],
 };
 
 const empresa = {
@@ -140,6 +141,7 @@ const fields = {
   estado: localizacao.estado,
 
   cnaes: utils.cnaes,
+  cnae: utils.cnae,
 
   email: utils.email,
   telefone: utils.telefone,

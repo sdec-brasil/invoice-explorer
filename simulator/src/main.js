@@ -136,7 +136,7 @@ function killscript(minutes) {
 
   registerEnterprises(master);
   printNotes(master);
-  replaceNotes(master);
+  // replaceNotes(master);
   registerEmitters(master);
   killscript(Number(timeLimit));
 })(process.argv[2] || 2);

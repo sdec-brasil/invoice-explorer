@@ -13,6 +13,7 @@ class Owner {
     this.registered = false;
     this.json = {};
     this.json.endBlock = address;
+    this.json.regTrib = fake.utils.rad(1, 4);
     this.json.razao = fake.empresa.razaoSocial();
     this.json.fantasia = fake.empresa.nomeFantasia();
     this.json.cnpj = fake.empresa.identificacao();
