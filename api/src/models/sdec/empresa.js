@@ -7,10 +7,6 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    codCnae: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
     razao: {
       type: DataTypes.STRING(150),
       unique: true,
@@ -56,11 +52,6 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TINYINT({ unsigned: true }),
       allowNull: false,
     },
-    ccm: {
-      // codigo de cadastro no municipio
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
     email: {
       type: DataTypes.STRING(80),
       allowNull: true,
@@ -82,7 +73,8 @@ export default function (sequelize, DataTypes) {
   });
 
   empresa.associate = (models) => {
-    empresa.belongsToMany(models.emissor, { as: 'Emissores', through: 'emissorEmpresa' });
+    empresa.belongsToMany(models.codigosCnae, { as: 'codCnae', through: 'cnaeEmpresa' });
+    empresa.belongsToMany(models.emissor, { as: 'emissores', through: 'emissorEmpresa' });
     empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'dono', allowNull: false } });
   };
 
