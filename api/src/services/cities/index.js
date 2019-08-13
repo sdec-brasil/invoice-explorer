@@ -426,28 +426,25 @@ const getPastRevenue = async (req) => {
           });
         }));
 
-        // promises.push(models.invoice.findAll(
-        //   {
-        //     raw: true,
-        //     attributes: [
-        //       [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
-        //       [sequelize.fn('MONTHNAME', sequelize.col('dataPrestacao')), 'monthName'],
-        //       [sequelize.fn('SUM', sequelize.col('valIss')), 'valIss'],
-        //       // [sequelize.fn('SUM', sequelize.col('valDeducoes')), 'valDeducoes'],
-        //     ],
-        //     group: ['month', 'monthName'],
-        //     where,
-        //   },
-        // ).then((aggregate) => {
-        //   aggregate.map((obj) => {
-        //     data[obj.month] = {
-        //       emittedInvoices: obj.emittedInvoicesCount,
-        //       monthName: obj.monthName,
-        //       valIss: parseInt(obj.valIss, 10),
-        //       // valDeducoes: parseInt(obj.valDeducoes, 10),
-        //     };
-        //   });
-        // }));
+        promises.push(models.invoice.findAll(
+          {
+            raw: true,
+            attributes: [
+              [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
+              [sequelize.fn('SUM', sequelize.col('valServicos')), 'valServicos'],
+            ],
+            group: ['month'],
+            where: {
+              ...where,
+              exigibilidadeISS: 3,
+            },
+          },
+        ).then((aggregate) => {
+          aggregate.map((obj) => {
+            const valServicos = parseInt(aggregate.valServicos, 10) || 0;
+            data[obj.month].isencaoIss = Math.round(valServicos * 0.02);
+          });
+        }));
 
         return Promise.all(promises).then(() => ({ code: 200, data }));
       }

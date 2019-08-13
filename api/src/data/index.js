@@ -8,7 +8,8 @@ export default function (models) {
   return new Promise(async (resolve, reject) => {
     const log = () => {};
     try {
-      await fixtures.loadFile(`${__dirname}/estado/estados.js`, models, { log });
+      // await fixtures.loadFile(`${__dirname}/estado/estados.js`, models, { log });
+      // not needed since the worker populates those fields
       await fixtures.loadFile(`${__dirname}/regiao/regioes.js`, models, { log });
       await fixtures.loadFile(`${__dirname}/municipio/municipios.js`, models, { log });
       await fixtures.loadFile(`${__dirname}/prefeitura/prefeituras.js`, models, { log });

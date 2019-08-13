@@ -29,7 +29,7 @@ export default function (sequelize, DataTypes) {
   nota_pagamento.associate = (models) => {
     nota_pagamento.hasMany(models.invoice, { foreignKey: 'notaPagamentoId' });
     nota_pagamento.belongsTo(models.empresa, { foreignKey: { name: 'cnpj', allowNull: false } });
-    nota_pagamento.belongsTo(models.emissor, { foreignKey: { name: 'emissorId', allowNull: false } });
+    nota_pagamento.belongsTo(models.emissor, { as: 'emittedBy', foreignKey: { name: 'emissor', allowNull: false } });
   };
 
   // nota_pagamento.belongsTo(models.metodo_pagamento, { primaryKey: { name: 'id_metodo', allowNull: false } });

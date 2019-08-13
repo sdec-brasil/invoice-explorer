@@ -14,10 +14,6 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
-    nonce: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     // ----- Campos da Prestação:
     // campo emissor
     dataPrestacao: {
@@ -252,7 +248,7 @@ export default function (sequelize, DataTypes) {
   });
 
   invoice.associate = (models) => {
-    invoice.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'emissorId', allowNull: false } });
+    invoice.belongsTo(models.emissor, { targetKey: 'address', as: 'emittedBy', foreignKey: { name: 'emissor', allowNull: false } });
     invoice.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'cnpj', allowNull: false } });
     invoice.belongsTo(models.nota_pagamento, { targetKey: 'guid', foreignKey: { name: 'notaPagamentoId', allowNull: true } });
     invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraPrestacao', allowNull: false } });
