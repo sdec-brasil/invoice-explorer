@@ -27,7 +27,7 @@ const listCities = async (req) => {
       {
         model: models.municipio,
         include: [
-          models.estado, models.regiao,
+          models.estado,
         ],
       },
     ],
@@ -45,7 +45,7 @@ const getCity = async req => models.prefeitura.findByPk(req.params.id,
       {
         model: models.municipio,
         include: [
-          models.estado, models.regiao,
+          models.estado,
         ],
       },
     ],
@@ -73,7 +73,7 @@ const getGeneralStats = async (req) => {
         {
           model: models.municipio,
           include: [
-            models.estado, models.regiao,
+            models.estado,
           ],
         },
       ],
@@ -168,7 +168,7 @@ const getDailyIssuing = async (req) => {
         {
           model: models.municipio,
           include: [
-            models.estado, models.regiao,
+            models.estado,
           ],
         },
       ],
@@ -237,7 +237,7 @@ const getStatusSplit = async (req) => {
         {
           model: models.municipio,
           include: [
-            models.estado, models.regiao,
+            models.estado,
           ],
         },
       ],
@@ -279,7 +279,7 @@ const getLateInvoices = async req => models.prefeitura.findByPk(req.params.id,
       {
         model: models.municipio,
         include: [
-          models.estado, models.regiao,
+          models.estado,
         ],
       },
     ],
@@ -325,7 +325,7 @@ const getExpectedRevenue = async (req) => {
         {
           model: models.municipio,
           include: [
-            models.estado, models.regiao,
+            models.estado,
           ],
         },
       ],
@@ -394,7 +394,7 @@ const getPastRevenue = async (req) => {
         {
           model: models.municipio,
           include: [
-            models.estado, models.regiao,
+            models.estado,
           ],
         },
       ],

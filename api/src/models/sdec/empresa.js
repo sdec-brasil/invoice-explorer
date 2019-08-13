@@ -60,10 +60,6 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    endBlock: {
-      type: DataTypes.STRING(64),
-      allowNull: false,
-    },
   },
   {
     underscored: false,
@@ -75,7 +71,7 @@ export default function (sequelize, DataTypes) {
   empresa.associate = (models) => {
     empresa.belongsToMany(models.codigosCnae, { as: 'codCnae', through: 'cnaeEmpresa' });
     empresa.belongsToMany(models.emissor, { as: 'emissores', through: 'emissorEmpresa' });
-    empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'dono', allowNull: false } });
+    empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'endBlock', allowNull: false } });
   };
 
   return empresa;
