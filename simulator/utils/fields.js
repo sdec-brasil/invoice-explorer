@@ -68,7 +68,8 @@ const utils = {
     };
     return cnaeList;
   },
-  cnae: () =>{
+  cnae: () => {
+    const rad = utils.getRandomInt;
     const d = rad(1,99);
     const gc = rad(1,99);
     const s = rad(1,99);
