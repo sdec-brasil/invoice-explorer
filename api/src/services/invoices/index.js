@@ -56,7 +56,9 @@ const listInvoices = (req) => {
   });
 };
 
-const getInvoice = async req => models.invoice.findByPk(req.params.txid)
+const getInvoice = async req => models.invoice.findOne({
+  txId: req.params.txid,
+})
   .then((inv) => {
     if (inv) {
       return { code: 200, data: serializers.invoice.serialize(inv) };
