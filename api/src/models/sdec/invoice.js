@@ -251,8 +251,8 @@ export default function (sequelize, DataTypes) {
     invoice.belongsTo(models.emissor, { targetKey: 'address', as: 'emittedBy', foreignKey: { name: 'emissor', allowNull: false } });
     invoice.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'cnpj', allowNull: false } });
     invoice.belongsTo(models.nota_pagamento, { targetKey: 'guid', foreignKey: { name: 'notaPagamento', allowNull: true } });
-    invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'prefeituraPrestacao', allowNull: false } });
-    invoice.belongsTo(models.prefeitura, { targetKey: 'codigoMunicipio', foreignKey: { name: 'codTributMunicipio', allowNull: false } });
+    invoice.belongsTo(models.municipio, { targetKey: 'codigoIbge', foreignKey: { name: 'prefeituraPrestacao', allowNull: false } });
+    invoice.belongsTo(models.municipio, { targetKey: 'codigoIbge', foreignKey: { name: 'codTributMunicipio', allowNull: false } });
     invoice.belongsTo(models.block, { targetKey: 'block_id', as: 'block', foreignKey: { name: 'blocoConfirmacao', allowNull: true } });
   };
 

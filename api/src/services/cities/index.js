@@ -18,18 +18,13 @@ const listCities = async (req) => {
     throw errors.BadFilterError();
   }
   treatNestedFilters(req.query.filter, where);
-  return models.prefeitura.findAndCountAll({
+  return models.municipio.findAndCountAll({
     offset: parseInt(req.query.offset, 10) || 0,
     limit: parseInt(req.query.limit, 10) || limitSettings.city.get,
     where,
     order: req.query.sort ? sq.sort(req.query.sort) : [],
     include: [
-      {
-        model: models.municipio,
-        include: [
-          models.estado,
-        ],
-      },
+      models.estado,
     ],
   }).then((results) => {
     const response = new ResponseList(req, results);
@@ -39,15 +34,10 @@ const listCities = async (req) => {
   });
 };
 
-const getCity = async req => models.prefeitura.findByPk(req.params.id,
+const getCity = async req => models.municipio.findByPk(req.params.id,
   {
     include: [
-      {
-        model: models.municipio,
-        include: [
-          models.estado,
-        ],
-      },
+      models.estado,
     ],
   })
   .then((inv) => {
@@ -66,16 +56,10 @@ const getGeneralStats = async (req) => {
     const lastDay = new Date(year, month, 0);
     dataPrestacao = { [Op.between]: [firstDay, lastDay] };
   }
-  return models.prefeitura.findByPk(req.params.id,
+  return models.municipio.findByPk(req.params.id,
     {
-      raw: true,
       include: [
-        {
-          model: models.municipio,
-          include: [
-            models.estado,
-          ],
-        },
+        models.estado,
       ],
     })
     .then(async (city) => {
@@ -83,7 +67,7 @@ const getGeneralStats = async (req) => {
         const data = {};
         data.city = city;
 
-        const where = { codTributMunicipio: city.codigoMunicipio };
+        const where = { codTributMunicipio: city.get('codigoIbge') };
         if (dataPrestacao) {
           where.dataPrestacao = dataPrestacao;
         }
@@ -161,16 +145,10 @@ const getDailyIssuing = async (req) => {
     const lastDay = new Date(year, month, 0);
     dataPrestacao = { [Op.between]: [firstDay, lastDay] };
   }
-  return models.prefeitura.findByPk(req.params.id,
+  return models.municipio.findByPk(req.params.id,
     {
-      raw: true,
       include: [
-        {
-          model: models.municipio,
-          include: [
-            models.estado,
-          ],
-        },
+        models.estado,
       ],
     })
     .then(async (city) => {
@@ -179,7 +157,7 @@ const getDailyIssuing = async (req) => {
         data.city = city;
 
         const where = {
-          codTributMunicipio: city.codigoMunicipio,
+          codTributMunicipio: city.get('codigoIbge'),
         };
         if (dataPrestacao) {
           where.dataPrestacao = dataPrestacao;
@@ -230,16 +208,10 @@ const getStatusSplit = async (req) => {
     }
     dataPrestacao = { [Op.between]: [limitDay, new Date()] };
   }
-  return models.prefeitura.findByPk(req.params.id,
+  return models.municipio.findByPk(req.params.id,
     {
-      raw: true,
       include: [
-        {
-          model: models.municipio,
-          include: [
-            models.estado,
-          ],
-        },
+        models.estado,
       ],
     })
     .then(async (city) => {
@@ -247,7 +219,7 @@ const getStatusSplit = async (req) => {
         const data = {};
         data.city = city;
 
-        const where = { codTributMunicipio: city.codigoMunicipio };
+        const where = { codTributMunicipio: city.get('codigoIbge') };
         if (dataPrestacao) {
           where.dataPrestacao = dataPrestacao;
         }
@@ -272,22 +244,16 @@ const getStatusSplit = async (req) => {
 };
 
 
-const getLateInvoices = async req => models.prefeitura.findByPk(req.params.id,
+const getLateInvoices = async req => models.municipio.findByPk(req.params.id,
   {
-    raw: true,
     include: [
-      {
-        model: models.municipio,
-        include: [
-          models.estado,
-        ],
-      },
+      models.estado,
     ],
   })
   .then(async (city) => {
     if (city) {
       const where = {
-        codTributMunicipio: city.codigoMunicipio,
+        codTributMunicipio: city.get('codigoIbge'),
         estado: 1, // atrasados
       };
       return models.invoice.findAll(
@@ -318,16 +284,10 @@ const getExpectedRevenue = async (req) => {
   const lastDay = new Date(year, month, 0);
   const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
 
-  return models.prefeitura.findByPk(req.params.id,
+  return models.municipio.findByPk(req.params.id,
     {
-      raw: true,
       include: [
-        {
-          model: models.municipio,
-          include: [
-            models.estado,
-          ],
-        },
+        models.estado,
       ],
     })
     .then(async (city) => {
@@ -335,7 +295,7 @@ const getExpectedRevenue = async (req) => {
         const data = {};
 
         const where = {
-          codTributMunicipio: city.codigoMunicipio,
+          codTributMunicipio: city.get('codigoIbge'),
           dataPrestacao,
         };
 
@@ -387,22 +347,16 @@ const getPastRevenue = async (req) => {
   const lastDay = new Date(year, 11, 31);
   const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
 
-  return models.prefeitura.findByPk(req.params.id,
+  return models.municipio.findByPk(req.params.id,
     {
-      raw: true,
       include: [
-        {
-          model: models.municipio,
-          include: [
-            models.estado,
-          ],
-        },
+        models.estado,
       ],
     })
     .then(async (city) => {
       if (city) {
         const where = {
-          codTributMunicipio: city.codigoMunicipio,
+          codTributMunicipio: city.get('codigoIbge'),
           dataPrestacao,
         };
         const data = {};

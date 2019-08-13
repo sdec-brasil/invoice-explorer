@@ -11,6 +11,12 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(60),
       allowNull: false,
     },
+    cnpj: {
+      type: DataTypes.STRING(14),
+      unique: true,
+      // TODO: review this allow null here and in the worker
+      allowNull: true,
+    },
   },
   {
     underscored: false,

@@ -33,8 +33,7 @@ const listInvoices = (req) => {
     where,
     order: req.query.sort ? sq.sort(req.query.sort) : [],
     include: [{
-      model: models.prefeitura,
-      as: 'prefeitura',
+      model: models.municipio,
       attributes: [],
     },
     {
