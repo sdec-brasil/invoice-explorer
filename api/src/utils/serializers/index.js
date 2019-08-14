@@ -6,7 +6,6 @@ serializers.invoice.serialize = (inv) => {
   const invoice = JSON.parse(JSON.stringify(inv));
   const invoiceStructure = {
     prestacao: [
-      'emissor',
       'dataPrestacao',
       'prefeituraPrestacao',
       'codTributMunicipio',
@@ -23,7 +22,7 @@ serializers.invoice.serialize = (inv) => {
       'valDeducoes',
       'baseCalculo',
     ],
-    taxas: [
+    tributos: [
       'issRetido',
       'respRetencao',
       'regimeEspTribut',

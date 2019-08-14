@@ -6,11 +6,15 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(64),
       primaryKey: true,
     },
-    substitutes: {
+    substitui: {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
-    substitutedBy: {
+    substituidaPor: {
+      type: DataTypes.STRING(64),
+      allowNull: true,
+    },
+    assetName: {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
