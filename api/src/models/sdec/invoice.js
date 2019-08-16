@@ -2,9 +2,13 @@
 // invoice
 export default function (sequelize, DataTypes) {
   const invoice = sequelize.define('invoice', {
+    nonce: {
+      type: DataTypes.INTEGER(),
+      primaryKey: true,
+      autoIncrement: true,
+    },
     txId: {
       type: DataTypes.STRING(64),
-      primaryKey: true,
     },
     substitui: {
       type: DataTypes.STRING(64),
