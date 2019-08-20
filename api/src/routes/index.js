@@ -7,6 +7,7 @@ import invoices from './invoices';
 import city from './city';
 import transactions from './transactions';
 import companies from './companies';
+import emitters from './emitters';
 
 const routes = {
   ...addresses,
@@ -17,6 +18,7 @@ const routes = {
   ...city,
   ...transactions,
   ...companies,
+  ...emitters,
 };
 
 export default routes;

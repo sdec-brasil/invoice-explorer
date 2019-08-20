@@ -28,7 +28,7 @@ const constraint = (str, size) => {
 };
 
 const utils = {
-  randomReais: (min = 10, max = 500) => (Math.random() * (max - min) + min).toFixed(2),
+  randomReais: (min = 100, max = 10000) => (Math.random() * (max - min) + min).toFixed(0),
   getRandomInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
   telefone: () => {
     const tel = leite.pessoa.rg().replace(/./g, '').replace('-', '');
@@ -56,6 +56,25 @@ const utils = {
   },
   obra: () => (Math.random() * 100000).toFixed(0),
   art: () => (Math.random() * 100000).toFixed(0),
+  cnaes: () => {
+    const rad = utils.getRandomInt;
+    const length = rad(1, 5);
+    const cnaeList = [];
+    for (let i = 0; i < length; i++) {
+      const d = rad(1,99);
+      const gc = rad(1,99);
+      const s = rad(1,99);
+      cnaeList.push(`${d < 10 ? '0' + d : d}.${gc}-${rad(1,9)}/${s < 10 ? '0' + s : s}`);
+    };
+    return cnaeList;
+  },
+  cnae: () => {
+    const rad = utils.getRandomInt;
+    const d = rad(1,99);
+    const gc = rad(1,99);
+    const s = rad(1,99);
+    return `${d < 10 ? '0' + d : d}.${gc}-${rad(1,9)}/${s < 10 ? '0' + s : s}`
+  },
 };
 
 const empresa = {
@@ -126,6 +145,9 @@ const fields = {
   complemento: localizacao.complemento,
   numero: localizacao.numero,
   estado: localizacao.estado,
+
+  cnaes: utils.cnaes,
+  cnae: utils.cnae,
 
   email: utils.email,
   telefone: utils.telefone,

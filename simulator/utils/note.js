@@ -1,21 +1,23 @@
 /* eslint-disable class-methods-use-this */
 const fake = require('./fields');
 
-const tomador = () => ({
-  id: undefined,
-  nif: undefined,
-  nomeRazao: undefined,
-  logEnd: undefined,
-  numEnd: undefined,
-  compEnd: undefined,
-  bairroEnd: undefined,
-  cidadeEnd: undefined,
-  estadoEnd: undefined,
-  paisEnd: undefined,
-  cepEnd: undefined,
-  email: undefined,
-  tel: undefined,
-});
+const tomador = () => {
+  return {
+    id: undefined,
+    nif: undefined,
+    nomeRazao: undefined,
+    logEnd: undefined,
+    numEnd: undefined,
+    compEnd: undefined,
+    bairroEnd: undefined,
+    cidadeEnd: undefined,
+    estadoEnd: undefined,
+    paisEnd: undefined,
+    cepEnd: undefined,
+    email: undefined,
+    tel: undefined,
+  }
+};
 
 const obra = () => ({
   codObra: fake.utils.obra,
@@ -35,63 +37,64 @@ const maybeF = (f, o = { p: 0.5 }) => {
 };
 
 class Nota {
-  constructor(addr) {
+  constructor(addr, cnpj) {
     this.note = {
       json: {
+        cnpj: cnpj,
         emissor: addr,
         prestacao: {
-          dataIncidencia: fake.utils.date(),
-          baseCalculo: fake.utils.reais(),
-          aliqServicos: fake.utils.reais(0, 0.3), // % of tax
-          valIss: fake.utils.reais(),
-          valLiquiNfse: fake.utils.reais(),
-          valServicos: fake.utils.reais(100, 450),
-          valDeducoes: fake.utils.reais(0, 10),
-          issRetido: String(fake.utils.rad(1, 2)),
-          itemLista: fake.utils.item(),
-          discriminacao: fake.utils.discriminacao(),
-          codServico: String(fake.utils.rad(21, 48)),
-          exigibilidadeISS: String(fake.utils.rad(1, 6)),
-          optanteSimplesNacional: String(fake.utils.rad(1, 2)),
-          incentivoFiscal: String(fake.utils.rad(1, 2)),
-          respRetencao: undefined,
-          valPis: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 6 }),
-          valCofins: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 3 }),
-          valInss: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 5 }),
-          valIr: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 7 }),
-          valCsll: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 3 }),
-          outrasRetencoes: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 8 }),
-          valTotalTributos: maybeF(fake.utils.reais, { p: 0.5, min: 6, max: 14 }),
-          descontoIncond: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 4 }),
-          descontoCond: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 5 }),
-          codCnae: maybeF(fake.utils.cnae),
+          codCnae: maybeF(fake.cnae),
           codNBS: maybeF(fake.utils.nbs),
+          codServico: String(fake.utils.rad(21, 48)),
+          codTributMunicipio: this.prefeitura(),
+          dataPrestacao: fake.utils.date(),
+          discriminacao: fake.utils.discriminacao(),
+          itemLista: fake.utils.item(),
           numProcesso: undefined,
-          regimeEspTribut: maybeF(fake.utils.rad, { p: 0.5, min: 1, max: 6 }),
-          prefeituraIncidencia: this.prefeitura(),
+          optanteSimplesNacional: String(fake.utils.rad(1, 2)),
+          prefeituraPrestacao: this.prefeitura(),
+        },
+        tributos: {
+          baseCalculo: undefined,
+          aliqServicos: fake.utils.reais(20, 50), // % of tax
+          issRetido: fake.utils.rad(1, 2),
+          respRetencao: undefined,
+          regimeEspTribut: maybeF(fake.utils.rad, { p: 0.5, min: 1, max: 600 }),
+          valCofins: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 300 }),
+          valCsll: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 300 }),
+          valDeducoes: fake.utils.reais(0, 10),
+          valInss: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 500 }),
+          valIr: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 700 }),
+          valIss: undefined,
+          valLiquiNfse: undefined,
+          valPis: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 600 }),
+          valServicos: fake.utils.reais(8000, 16000),
+          valTotalTributos: maybeF(fake.utils.reais, { p: 0.5, min: 6, max: 1400 }),
+          outrasRetencoes: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 800 }),
+          incentivoFiscal: String(fake.utils.rad(1, 2)),
+          descontoCond: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 500 }),
+          descontoIncond: maybeF(fake.utils.reais, { p: 0.5, min: 0, max: 400 }),
+          exigibilidadeISS: String(fake.utils.rad(1, 6)),
         },
         tomador: maybeF(tomador),
         constCivil: maybeF(obra, 0.95),
       },
     };
 
+    const tribut = this.note.json.tributos;
     const prest = this.note.json.prestacao;
 
-    if (prest.regimeEspTribut !== undefined) {
-      prest.regimeEspTribut = String(prest.regimeEspTribut);
-    }
+    tribut.valIss = this.valIss();
 
-    prest.valIss = this.valIss();
-
-    if (prest.exigibilidadeISS === '6' || prest.exigibilidadeISS === '7') {
+    if (tribut.exigibilidadeISS === '6' || tribut.exigibilidadeISS === '7') {
       prest.numProcesso = fake.utils.numeroProcesso();
     }
 
-    if (prest.issRetido === '1') {
-      prest.respRetencao = String(fake.utils.rad(1, 2));
+    if (tribut.issRetido === '1') {
+      tribut.respRetencao = fake.utils.rad(1, 2);
     }
 
-    if (prest.respRetencao === '2') {
+    if (tribut.respRetencao === '2') {
       this.note.json.intermediario = {
         identificacaoIntermed: fake.empresa.identificacao(),
         nomeRazaoIntermed: fake.empresa.razaoSocial(),
@@ -99,8 +102,8 @@ class Nota {
       };
     }
 
-    prest.baseCalculo = this.baseCalculo();
-    prest.valLiquiNfse = this.valLiquiNfse();
+    tribut.baseCalculo = this.baseCalculo();
+    tribut.valLiquiNfse = this.valLiquiNfse();
 
     this.meta = [
       'INVOICE_REGISTRY',
@@ -111,38 +114,46 @@ class Nota {
       String(prest.exigibilidadeISS),
       prest.valIss,
     ];
+
+    if(this.note.json.tomador && !!Object.keys(this.note.json.tomador).length) {
+      delete this.note.json.tomador;
+    }
+
+    if(this.note.json.constCivil && !!Object.keys(this.note.json.constCivil).length) {
+      delete this.note.json.constCivil;
+    }
   }
 
   prefeitura() {
     const prefeituras = [1100015, 1100379, 1100403, 1100346];
-    return prefeituras[Math.floor(Math.random() * prefeituras.length)];
+    return String(prefeituras[Math.floor(Math.random() * prefeituras.length)]);
   }
 
   valIss() {
-    const prest = this.note.json.prestacao;
-    return `${(Number(prest.valServicos) * Number(prest.aliqServicos)).toFixed(2)}`;
+    const tribut = this.note.json.tributos;
+    return `${(Number(tribut.valServicos) * Number(tribut.aliqServicos)/10).toFixed(0)}`;
   }
 
   baseCalculo() {
-    const prest = this.note.json.prestacao;
-    const valServ = prest.valServicos !== undefined ? Number(prest.valServicos) : 0;
-    const valDeducoes = prest.valDeducoes !== undefined ? Number(prest.valDeducoes) : 0;
-    const descontoIncond = prest.descontoIncond !== undefined ? Number(prest.descontoIncond) : 0;
-    return `${(valServ - (valDeducoes + descontoIncond)).toFixed(2)}`;
+    const tribut = this.note.json.tributos;
+    const valServ = tribut.valServicos !== undefined ? Number(tribut.valServicos) : 0;
+    const valDeducoes = tribut.valDeducoes !== undefined ? Number(tribut.valDeducoes) : 0;
+    const descontoIncond = tribut.descontoIncond !== undefined ? Number(tribut.descontoIncond) : 0;
+    return `${(valServ - (valDeducoes + descontoIncond)).toFixed(0)}`;
   }
 
   valLiquiNfse() {
-    const prest = this.note.json.prestacao;
-    const valServ = prest.valServicos !== undefined ? Number(prest.valServicos) : 0;
-    const valPis = prest.valPis !== undefined ? Number(prest.valPis) : 0;
-    const valCofins = prest.valCofins !== undefined ? Number(prest.valCofins) : 0;
-    const valInss = prest.valInss !== undefined ? Number(prest.valInss) : 0;
-    const valIr = prest.valIr !== undefined ? Number(prest.valIr) : 0;
-    const valCsll = prest.valCsll !== undefined ? Number(prest.valCsll) : 0;
-    const outrasRetencoes = prest.outrasRetencoes !== undefined ? Number(prest.outrasRetencoes) : 0;
-    const issRetido = prest.issRetido === '1' ? Number(prest.valIss) : 0;
-    const descontoCond = prest.descontoCond !== undefined ? Number(prest.descontoCond) : 0;
-    const descontoIncond = prest.descontoIncond !== undefined ? Number(prest.descontoIncond) : 0;
+    const tribut = this.note.json.tributos;
+    const valServ = tribut.valServicos !== undefined ? Number(tribut.valServicos) : 0;
+    const valPis = tribut.valPis !== undefined ? Number(tribut.valPis) : 0;
+    const valCofins = tribut.valCofins !== undefined ? Number(tribut.valCofins) : 0;
+    const valInss = tribut.valInss !== undefined ? Number(tribut.valInss) : 0;
+    const valIr = tribut.valIr !== undefined ? Number(tribut.valIr) : 0;
+    const valCsll = tribut.valCsll !== undefined ? Number(tribut.valCsll) : 0;
+    const outrasRetencoes = tribut.outrasRetencoes !== undefined ? Number(tribut.outrasRetencoes) : 0;
+    const issRetido = tribut.issRetido === '1' ? Number(tribut.valIss) : 0;
+    const descontoCond = tribut.descontoCond !== undefined ? Number(tribut.descontoCond) : 0;
+    const descontoIncond = tribut.descontoIncond !== undefined ? Number(tribut.descontoIncond) : 0;
     return `${(
       valServ
         - valPis
@@ -154,7 +165,7 @@ class Nota {
         - issRetido
         - descontoCond
         - descontoIncond
-    ).toFixed(2)}`;
+    ).toFixed(0)}`;
   }
 
   replaceOldNote(txid) {
@@ -165,6 +176,10 @@ class Nota {
 
   registerTxId(txid) {
     this.txid = txid;
+  }
+
+  registerName(name) {
+    this.name = name;
   }
 
   getTxId() {

@@ -7,50 +7,49 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    enderecoBlockchain: {
-      type: DataTypes.STRING(45),
-      unique: true,
-      allowNull: false,
-    },
-    razaoSocial: {
+    razao: {
       type: DataTypes.STRING(150),
       unique: true,
       allowNull: false,
     },
-    nomeFantasia: {
+    fantasia: {
       type: DataTypes.STRING(60),
+      allowNull: true,
+    },
+    cepEnd: {
+      type: DataTypes.STRING(8),
       allowNull: false,
     },
-    enderecoEmpresa: {
+    logEnd: {
       type: DataTypes.STRING(125),
       allowNull: false,
     },
-    numeroEndereco: {
-      type: DataTypes.INTEGER,
+    numEnd: {
+      type: DataTypes.STRING(10),
       allowNull: false,
     },
-    complementoEndereco: {
+    compEnd: {
       type: DataTypes.STRING(60),
       allowNull: true,
     },
-    bairroEndereco: {
+    bairroEnd: {
       type: DataTypes.STRING(60),
       allowNull: false,
     },
-    cidadeEndereco: {
-      type: DataTypes.STRING(60),
+    cidadeEnd: {
+      type: DataTypes.STRING(7),
       allowNull: false,
     },
-    unidadeFederacao: {
+    estadoEnd: {
       type: DataTypes.STRING(2),
       allowNull: false,
     },
-    paisEndereco: {
-      type: DataTypes.STRING(4),
-      allowNull: true,
-    },
-    cep: {
-      type: DataTypes.STRING(8),
+    regTrib: {
+      // 1 - MEI;
+      // 2 - Simples Nacional;
+      // 3 - Lucro Presumido;
+      // 4 - Lucro Real;
+      type: DataTypes.TINYINT({ unsigned: true }),
       allowNull: false,
     },
     email: {
@@ -68,6 +67,12 @@ export default function (sequelize, DataTypes) {
     freezeTableName: true,
     timestamps: false,
   });
+
+  empresa.associate = (models) => {
+    empresa.belongsToMany(models.codigosCnae, { as: 'codCnae', through: 'cnaeEmpresa' });
+    empresa.belongsToMany(models.emissor, { as: 'emissores', through: 'emissorEmpresa' });
+    empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'endBlock', allowNull: false } });
+  };
 
   return empresa;
 }

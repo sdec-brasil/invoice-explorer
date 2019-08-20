@@ -5,11 +5,11 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    data_emisaso: {
+    dataEmissao: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    valor_total: {
+    valorTotal: {
       type: DataTypes.DOUBLE,
       allowNull: false,
     },
@@ -21,16 +21,19 @@ export default function (sequelize, DataTypes) {
     },
   },
   {
-    underscored: true,
+    underscored: false,
     tableName: 'nota_pagamento',
     freezeTableName: true,
   });
 
-  /*nota_pagamento.associate = (models) => {
-    // nota_pagamento.belongsTo(models.invoice, { primaryKey: { name: 'id_nota', allowNull: false } });
-    // nota_pagamento.belongsTo(models.empresa, { primaryKey: { name: 'cnpj_empresa', allowNull: false } });
-    // nota_pagamento.belongsTo(models.metodo_pagamento, { primaryKey: { name: 'id_metodo', allowNull: false } });
-  }; */
+  nota_pagamento.associate = (models) => {
+    nota_pagamento.hasMany(models.invoice, { foreignKey: 'notaPagamento' });
+    nota_pagamento.belongsTo(models.empresa, { foreignKey: { name: 'cnpj', allowNull: false } });
+    nota_pagamento.belongsTo(models.emissor, { as: 'emittedBy', foreignKey: { name: 'emissor', allowNull: false } });
+  };
+
+  // nota_pagamento.belongsTo(models.metodo_pagamento, { primaryKey: { name: 'id_metodo', allowNull: false } });
+
 
   return nota_pagamento;
 }

@@ -11,6 +11,12 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(60),
       allowNull: false,
     },
+    cnpj: {
+      type: DataTypes.STRING(14),
+      unique: true,
+      // TODO: review this allow null here and in the worker
+      allowNull: true,
+    },
   },
   {
     underscored: false,
@@ -21,7 +27,7 @@ export default function (sequelize, DataTypes) {
 
   municipio.associate = (models) => {
     municipio.belongsTo(models.estado, { targetKey: 'sigla', foreignKey: { name: 'uf', allowNull: false } });
-    municipio.belongsTo(models.regiao, { targetKey: 'nomeRegiao', foreignKey: { name: 'nomeRegiao', allowNull: false } });
+    // municipio.belongsTo(models.regiao, { targetKey: 'nomeRegiao', foreignKey: { name: 'nomeRegiao', allowNull: false } });
   };
 
   return municipio;

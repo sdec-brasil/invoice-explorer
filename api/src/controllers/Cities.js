@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
+import { validationResult } from 'express-validator/check';
 import service from '../services/cities';
 
 
@@ -19,6 +20,53 @@ export default class CitiesController {
       res.status(response.code).send(response.data);
     } catch (err) {
       next(err);
+    }
+  }
+
+  async generalStats(req, res, next) {
+    try {
+      const response = await service.getGeneralStats(req);
+      res.status(response.code).send(response.data);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async dailyIssuing(req, res, next) {
+    try {
+      const response = await service.getDailyIssuing(req);
+      res.status(response.code).send(response.data);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async statusSplit(req, res, next) {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      try {
+        const response = await service.getStatusSplit(req);
+        res.status(response.code).send(response.data);
+      } catch (err) {
+        next(err);
+      }
+    } else {
+      res.status(422).json({ errors: errors.array() });
+    }
+  }
+
+
+  async pastRevenue(req, res, next) {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      try {
+        const response = await service.getPastRevenue(req);
+        res.status(response.code).send(response.data);
+      } catch (err) {
+        next(err);
+      }
+    } else {
+      res.status(422).json({ errors: errors.array() });
     }
   }
 }
