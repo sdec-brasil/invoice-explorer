@@ -3,18 +3,20 @@ import { limitSettings } from '../../config/config';
 import models from '../../models';
 import { serializers, treatNestedFilters, errors } from '../../utils';
 
-
 const sqs = require('sequelize-querystring');
 
-const listInvoices = (req) => {
+const listInvoices = async (req) => {
   const sq = sqs.withSymbolicOps(models.Sequelize, {});
   let filter = req.query.filter ? req.query.filter : '';
 
-  if (!filter.includes('block.block_datetime')) {
+  const lastRecord = await models.invoice.findOne({ limit: 1, order: [['nonce', 'DESC']] });
+  const lastNonce = lastRecord ? lastRecord.get('nonce') : null;
+
+  if (!filter.includes('nonce') && lastNonce) {
     if (filter.length === 0) {
-      filter += `block.block_datetime lte ${((new Date()).toISOString())}`;
+      filter += `nonce lte ${lastNonce}`;
     } else {
-      filter += `, block.block_datetime lte ${((new Date()).toISOString())}`;
+      filter += `, nonce lte ${lastNonce}`;
     }
   }
   let where = null;
@@ -33,8 +35,7 @@ const listInvoices = (req) => {
     where,
     order: req.query.sort ? sq.sort(req.query.sort) : [],
     include: [{
-      model: models.prefeitura,
-      as: 'prefeitura',
+      model: models.municipio,
       attributes: [],
     },
     {
@@ -57,7 +58,9 @@ const listInvoices = (req) => {
   });
 };
 
-const getInvoice = async req => models.invoice.findByPk(req.params.txid)
+const getInvoice = async req => models.invoice.findOne({
+  txId: req.params.txid,
+})
   .then((inv) => {
     if (inv) {
       return { code: 200, data: serializers.invoice.serialize(inv) };

@@ -11,8 +11,7 @@ export default function (models) {
       // await fixtures.loadFile(`${__dirname}/estado/estados.js`, models, { log });
       // not needed since the worker populates those fields
       await fixtures.loadFile(`${__dirname}/regiao/regioes.js`, models, { log });
-      await fixtures.loadFile(`${__dirname}/municipio/municipios.js`, models, { log });
-      await fixtures.loadFile(`${__dirname}/prefeitura/prefeituras.js`, models, { log });
+      // await fixtures.loadFile(`${__dirname}/municipio/municipios.js`, models, { log });
       // await fixtures.loadFile(`${__dirname}/empresa/empresas.js`, models, { log });
       process.emit('dataLoaded');
       resolve();

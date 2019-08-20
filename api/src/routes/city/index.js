@@ -5,25 +5,19 @@ export default {
   'GET /cities': 'Cities.get',
   'GET /cities/:id': 'Cities.getById',
 
-  'GET /cities/:id/general-stats': {
-    path: 'Cities.generalStats',
-  },
   'GET /cities/:id/daily-issuing': {
     path: 'Cities.dailyIssuing',
   },
-  'GET /cities/:id/status-split': {
+  'GET /cities/:id/invoices/distribution': {
     path: 'Cities.statusSplit',
-  },
-  'GET /cities/:id/expected-revenue': {
-    path: 'Cities.expectedRevenue',
-  },
-  'GET /cities/:id/late-invoices': {
-    path: 'Cities.lateInvoices',
+    middlewares: [
+      query('range').isInt({ min: 0, max: 4 }).optional(),
+    ],
   },
   'GET /cities/:id/past-revenue': {
     path: 'Cities.pastRevenue',
     middlewares: [
-      query('year').exists().isNumeric(),
+      query('year').exists().isInt(),
     ],
   },
 };
