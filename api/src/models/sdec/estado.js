@@ -1,4 +1,4 @@
-// Nota_Pagamento
+// Estado
 export default function (sequelize, DataTypes) {
   const estado = sequelize.define('estado', {
     sigla: {
@@ -7,7 +7,7 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    nome: {
+    name: {
       type: DataTypes.STRING(30),
       unique: true,
       allowNull: false,

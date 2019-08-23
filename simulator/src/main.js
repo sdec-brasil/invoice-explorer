@@ -18,10 +18,10 @@ const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) +
 
 async function publishNote(master, company) {
   try {
-    const [ address, cnpj ] = company;
-    const note = new Note(address, cnpj);
+    const [ address, taxNumber ] = company;
+    const note = new Note(address, taxNumber);
     const timestamp = Date.now();
-    const assetname = note.note.json.cnpj.replace('.', '').replace('/','').replace('-', '') + `/NF-${timestamp}`;
+    const assetname = note.note.json.taxNumber.replace('.', '').replace('/','').replace('-', '') + `/NF-${timestamp}`;
     const txid = await master.node.issueFrom([
       address, 
       address, 
@@ -33,7 +33,7 @@ async function publishNote(master, company) {
     ]);
     note.registerTxId(txid);
     note.registerName(assetname);
-    console.log(`Nota registrada | TxId: ${txid} | CNPJ: ${cnpj} | Address: ${address}`);
+    console.log(`Nota registrada | TxId: ${txid} | taxNumber: ${taxNumber} | Address: ${address}`);
     if (Math.random() > 0.9) replaceableNotes.push(note);
   } catch (e) {
     console.log('Error | Registrar nota fiscal nova', e);
@@ -76,7 +76,7 @@ function replaceNotes(master) {
     if (length) {
       try {
         const oldNote = replaceableNotes.pop();
-        const newNote = new Note(oldNote.note.emissor, oldNote.note.cnpj);
+        const newNote = new Note(oldNote.note.emissor, oldNote.note.taxNumber);
         newNote.replaceOldNote(oldNote.txid);
         const address = oldNote.note.emissor;
         const txid = master.node.issueMoreFrom([
@@ -88,7 +88,7 @@ function replaceNotes(master) {
         ]);
         newNote.registerTxId(txid);
         newNote.registerName(oldNote.name);
-        console.log(`Nota substituída | TxId: ${txid} | CNPJ: ${oldNote.note.cnpj} | Address: ${address}`);
+        console.log(`Nota substituída | TxId: ${txid} | taxNumber: ${oldNote.note.taxNumber} | Address: ${address}`);
         if (Math.random() > 0.9) replaceNotes.push(newNote);
       } catch (e) {
         console.log('Error | Registrar nota fiscal substituta');
@@ -107,7 +107,7 @@ function registerEmitters(master) {
       const address = await master.node.getNewAddress();
       const owner = owners[getRandomInt(0, length - 1)];
       const txid = await master.node.grantFrom([owner.json.endBlock, address, owner.constructAsset().name + '.low3', 0]);
-      emitters.push([address, owner.json.cnpj])
+      emitters.push([address, owner.json.taxNumber])
     } catch (e) {
       console.error('Error | Registrar emissor', e);
     }
@@ -141,4 +141,4 @@ function killscript(minutes) {
   killscript(Number(timeLimit));
 })(process.argv[2] || 2);
 
-module.exports.addEmitter = (address, cnpj) => emitters.push([address, cnpj]);
+module.exports.addEmitter = (address, taxNumber) => emitters.push([address, taxNumber]);

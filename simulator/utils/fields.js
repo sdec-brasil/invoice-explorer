@@ -5,18 +5,18 @@ const leite = new Leite();
 
 // Field's Size according to Specs
 const sz = {
-  razao: 150,
-  fantasia: 60,
-  logEnd: 125,
-  numEnd: 10,
-  compEnd: 60,
-  bairroEnd: 60,
-  cidadeEnd: 7,
-  estadoEnd: 2,
+  name: 150,
+  tradeName: 60,
+  street: 125,
+  number: 10,
+  additionalInformation: 60,
+  district: 60,
+  city: 7,
+  state: 2,
   paisEnd: 4,
-  cepEnd: 8,
+  postalCode: 8,
   email: 80,
-  tel: 20,
+  phoneNumber: 20,
   id: 18,
   endBlock: 38,
 };
@@ -31,9 +31,9 @@ const utils = {
   randomReais: (min = 100, max = 10000) => (Math.random() * (max - min) + min).toFixed(0),
   getRandomInt: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
   telefone: () => {
-    const tel = leite.pessoa.rg().replace(/./g, '').replace('-', '');
-    constraint(tel, sz.tel);
-    return tel;
+    const phoneNumber = leite.pessoa.rg().replace(/./g, '').replace('-', '');
+    constraint(phoneNumber, sz.phoneNumber);
+    return phoneNumber;
   },
   email: () => {
     const mail = `${leite.pessoa.email()}`;
@@ -56,7 +56,7 @@ const utils = {
   },
   obra: () => (Math.random() * 100000).toFixed(0),
   art: () => (Math.random() * 100000).toFixed(0),
-  cnaes: () => {
+  economicAtivites: () => {
     const rad = utils.getRandomInt;
     const length = rad(1, 5);
     const cnaeList = [];
@@ -79,56 +79,56 @@ const utils = {
 
 const empresa = {
   razaoSocial: () => {
-    const razao = `${leite.pessoa.nome()} Razão Social`;
-    constraint(razao, sz.razao);
-    return razao;
+    const name = `${leite.pessoa.nome()} Razão Social`;
+    constraint(name, sz.name);
+    return name;
   },
   nomeFantasia: () => {
-    const fantasia = 'Apenas um Nome Fantasia LTDA';
-    constraint(fantasia, sz.fantasia);
-    return fantasia;
+    const tradeName = 'Apenas um Nome tradeName LTDA';
+    constraint(tradeName, sz.tradeName);
+    return tradeName;
   },
   identificacao: () => {
-    const cnpj = `${leite.empresa.cnpj({formatado: true})}`;
-    constraint(cnpj, sz.id);
-    return cnpj;
+    const taxNumber = `${leite.empresa.cnpj({formatado: true})}`;
+    constraint(taxNumber, sz.id);
+    return taxNumber;
   },
 };
 
 const localizacao = {
   logradouro: () => {
     const log = `${leite.localizacao.logradouro()}`;
-    constraint(log, sz.logEnd);
+    constraint(log, sz.street);
     return log;
   },
   bairro: () => {
     const bairro = `${leite.localizacao.bairro()}`;
-    constraint(bairro, sz.bairroEnd);
+    constraint(bairro, sz.district);
     return bairro;
   },
   cep: () => {
     const cep = `${leite.localizacao.cep()}`;
-    constraint(cep, sz.cepEnd);
+    constraint(cep, sz.postalCode);
     return cep;
   },
   cidade: () => {
     const cidade = `${utils.getRandomInt(1000000, 9999999)}`;
-    constraint(cidade, sz.cidadeEnd);
+    constraint(cidade, sz.city);
     return cidade;
   },
   complemento: () => {
     const comp = `${leite.localizacao.complemento()}`;
-    constraint(comp, sz.compEnd);
+    constraint(comp, sz.additionalInformation);
     return comp;
   },
   estado: () => {
     const uf = `${leite.localizacao.estado()}`;
-    constraint(uf, sz.estadoEnd);
+    constraint(uf, sz.state);
     return uf;
   },
   numero: () => {
     const num = `${utils.getRandomInt(0, 450)}`;
-    constraint(num, sz.numEnd);
+    constraint(num, sz.number);
     return num;
   },
 };
@@ -146,7 +146,7 @@ const fields = {
   numero: localizacao.numero,
   estado: localizacao.estado,
 
-  cnaes: utils.cnaes,
+  economicAtivites: utils.economicAtivites,
   cnae: utils.cnae,
 
   email: utils.email,
@@ -160,7 +160,7 @@ const fields = {
     codMunicipio: utils.randomMunicipio,
     cnae: utils.randomCNAE,
     nbs: utils.randomNBS,
-    numeroProcesso: utils.randomProcesso,
+    processNumber: utils.randomProcesso,
     hex: utils.randomHex,
     rad: utils.getRandomInt,
     obra: utils.obra,

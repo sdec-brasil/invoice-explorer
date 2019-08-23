@@ -4,8 +4,8 @@ export default {
     path: 'Invoices.get',
   },
 
-  // Pega nota fiscal pelo txid
-  'GET /invoices/:txid': {
-    path: 'Invoices.getByTxId',
+  // Pega nota fiscal pelo invoiceCode
+  'GET /invoices/:invoiceCode': {
+    path: 'Invoices.getByinvoiceCode',
   },
 };

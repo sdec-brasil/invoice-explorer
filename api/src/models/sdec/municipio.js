@@ -1,17 +1,17 @@
 // Municipio
 export default function (sequelize, DataTypes) {
   const municipio = sequelize.define('municipio', {
-    codigoIbge: {
+    code: {
       type: DataTypes.STRING(7),
       primaryKey: true,
       allowNull: false,
       unique: true,
     },
-    nome: {
+    name: {
       type: DataTypes.STRING(60),
       allowNull: false,
     },
-    cnpj: {
+    taxNumber: {
       type: DataTypes.STRING(14),
       unique: true,
       // TODO: review this allow null here and in the worker
@@ -27,7 +27,7 @@ export default function (sequelize, DataTypes) {
 
   municipio.associate = (models) => {
     municipio.belongsTo(models.estado, { targetKey: 'sigla', foreignKey: { name: 'uf', allowNull: false } });
-    // municipio.belongsTo(models.regiao, { targetKey: 'nomeRegiao', foreignKey: { name: 'nomeRegiao', allowNull: false } });
+    // municipio.belongsTo(models.regiao, { targetKey: 'nameRegiao', foreignKey: { name: 'nameRegiao', allowNull: false } });
   };
 
   return municipio;

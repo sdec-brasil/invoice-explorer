@@ -1,50 +1,50 @@
 // Empresa
 export default function (sequelize, DataTypes) {
   const empresa = sequelize.define('empresa', {
-    cnpj: {
+    taxNumber: {
       type: DataTypes.STRING(14),
       primaryKey: true,
       unique: true,
       allowNull: false,
     },
-    razao: {
+    name: {
       type: DataTypes.STRING(150),
       unique: true,
       allowNull: false,
     },
-    fantasia: {
+    tradeName: {
       type: DataTypes.STRING(60),
       allowNull: true,
     },
-    cepEnd: {
+    postalCode: {
       type: DataTypes.STRING(8),
       allowNull: false,
     },
-    logEnd: {
+    street: {
       type: DataTypes.STRING(125),
       allowNull: false,
     },
-    numEnd: {
+    number: {
       type: DataTypes.STRING(10),
       allowNull: false,
     },
-    compEnd: {
+    additionalInformation: {
       type: DataTypes.STRING(60),
       allowNull: true,
     },
-    bairroEnd: {
+    district: {
       type: DataTypes.STRING(60),
       allowNull: false,
     },
-    cidadeEnd: {
+    city: {
       type: DataTypes.STRING(7),
       allowNull: false,
     },
-    estadoEnd: {
+    state: {
       type: DataTypes.STRING(2),
       allowNull: false,
     },
-    regTrib: {
+    taxRegime: {
       // 1 - MEI;
       // 2 - Simples Nacional;
       // 3 - Lucro Presumido;
@@ -56,7 +56,7 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.STRING(80),
       allowNull: true,
     },
-    telefone: {
+    phoneNumber: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
