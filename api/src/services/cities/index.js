@@ -44,15 +44,15 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
           arg.generalStats = {};
           const obj = arg.generalStats;
           const { month, year } = req.query;
-          let dataPrestacao;
+          let provisionIssuedOn;
           if (month && year) {
             const firstDay = new Date(year, month - 1, 1);
             const lastDay = new Date(year, month, 0);
-            dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+            provisionIssuedOn = { [Op.between]: [firstDay, lastDay] };
           }
-          const where = { codTributMunicipio: city.get('codigoIbge') };
-          if (dataPrestacao) {
-            where.dataPrestacao = dataPrestacao;
+          const where = { provisionCityServiceLocation: city.get('code') };
+          if (provisionIssuedOn) {
+            where.provisionIssuedOn = provisionIssuedOn;
           }
           const p = [];
 
@@ -60,12 +60,12 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
             {
               raw: true,
               attributes: [
-                // calculate average valLiquiNfse
-                [sequelize.fn('AVG', sequelize.col('valLiquiNfse')), 'avgLiquidValue'],
+                // calculate average tributesNetValueNfse
+                [sequelize.fn('AVG', sequelize.col('tributesNetValueNfse')), 'avgLiquidValue'],
                 // calculate number of invoices
-                [sequelize.fn('COUNT', sequelize.col('txId')), 'emittedInvoicesCount'],
+                [sequelize.fn('COUNT', sequelize.col('invoiceCode')), 'emittedInvoicesCount'],
                 // calculate average iss per invoice
-                [sequelize.fn('AVG', sequelize.col('valIss')), 'avgIss'],
+                [sequelize.fn('AVG', sequelize.col('tributesIssAmount')), 'avgIss'],
               ],
               where: {
                 ...where,
@@ -81,10 +81,10 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
           p.push(models.invoice.findAll({
             raw: true,
             attributes: [
-              [sequelize.fn('SUM', sequelize.col('valIss')), 'lateIssValue'],
-              [sequelize.fn('COUNT', sequelize.col('txId')), 'lateIssCount']],
+              [sequelize.fn('SUM', sequelize.col('tributesIssAmount')), 'lateIssValue'],
+              [sequelize.fn('COUNT', sequelize.col('invoiceCode')), 'lateIssCount']],
             where: {
-              estado: 1,
+              status: 1,
               ...where,
             },
           }).then((inv) => {
@@ -95,21 +95,21 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
           // biggest emissor in values
           // promises.push(models.invoice.findAll({
           //   raw: true,
-          //   attributes: ['cnpj',
-          //     [sequelize.fn('SUM', sequelize.col('valIss')), 'sumIss'],
+          //   attributes: ['taxNumber',
+          //     [sequelize.fn('SUM', sequelize.col('tributesIssAmount')), 'sumIss'],
           //   ],
           //   where,
-          //   group: ['cnpj'],
+          //   group: ['taxNumber'],
           //   order: sequelize.literal('sumIss DESC'),
           //   limit: 1,
           // }).then(async (issuer) => {
           //   if (issuer.length) {
-          //     const company = await models.empresa.findByPk(issuer[0].cnpj);
+          //     const company = await models.empresa.findByPk(issuer[0].taxNumber);
           //     obj.biggestIssuer = {
-          //       cnpj: company.get('cnpj'),
+          //       taxNumber: company.get('taxNumber'),
           //       endBlock: company.get('endBlock'),
-          //       razao: company.get('razao'),
-          //       fantasia: company.get('fantasia'),
+          //       name: company.get('name'),
+          //       tradeName: company.get('tradeName'),
           //     };
           //   } else {
           //     obj.biggestIssuer = null;
@@ -126,15 +126,15 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
           obj.dailyIssuing = {};
           const { dailyIssuing } = obj;
           const where = {
-            codTributMunicipio: city.get('codigoIbge'),
-            dataPrestacao: new Date(),
+            provisionCityServiceLocation: city.get('code'),
+            provisionIssuedOn: new Date(),
           };
           return models.invoice.findAll(
             {
               raw: true,
               attributes: [
-                'dataPrestacao',
-                [sequelize.fn('COUNT', sequelize.col('txId')), 'emittedInvoicesCount'],
+                'provisionIssuedOn',
+                [sequelize.fn('COUNT', sequelize.col('invoiceCode')), 'emittedInvoicesCount'],
               ],
               where,
             },
@@ -147,7 +147,7 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
             const month = now.getMonth() + 1;
             // TODO: move BASE_URL to an environment variable
             const BASE_URL = 'http://localhost:8000';
-            const url = `${BASE_URL}/v1/cities/${city.get('codigoIbge')}`
+            const url = `${BASE_URL}/v1/cities/${city.get('code')}`
             + `/daily-issuing/?year=${year}&month=${month}`;
             dailyIssuing.url = url;
           });
@@ -159,22 +159,22 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
         ((obj) => {
           const limitDay = new Date();
           limitDay.setMonth(limitDay.getMonth() - 6);
-          const dataPrestacao = { [Op.between]: [limitDay, new Date()] };
+          const provisionIssuedOn = { [Op.between]: [limitDay, new Date()] };
           return models.municipio.findByPk(req.params.id, {})
             .then(async (city) => {
               if (city) {
                 const where = {
-                  codTributMunicipio: city.get('codigoIbge'),
-                  dataPrestacao,
+                  provisionCityServiceLocation: city.get('code'),
+                  provisionIssuedOn,
                 };
                 return models.invoice.findAll(
                   {
                     raw: true,
                     attributes: [
-                      'estado',
-                      [sequelize.fn('COUNT', sequelize.col('txId')), 'count'],
+                      'status',
+                      [sequelize.fn('COUNT', sequelize.col('invoiceCode')), 'count'],
                     ],
-                    group: ['estado'],
+                    group: ['status'],
                     where,
                   },
                 ).then((inv) => {
@@ -182,7 +182,7 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
                   const status = {};
                   inv.forEach((item) => {
                     count += item.count;
-                    status[item.estado] = item.count;
+                    status[item.status] = item.count;
                   });
                   obj.invoiceStatusDistribution = { count, status };
                 });
@@ -199,24 +199,24 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
           const month = now.getMonth();
           const firstDay = new Date(year, month - 1, 1);
           const lastDay = new Date(year, month, 0);
-          const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+          const provisionIssuedOn = { [Op.between]: [firstDay, lastDay] };
 
           return models.municipio.findByPk(req.params.id, {})
             .then(async (city) => {
               if (city) {
                 const where = {
-                  codTributMunicipio: city.get('codigoIbge'),
-                  dataPrestacao,
+                  provisionCityServiceLocation: city.get('code'),
+                  provisionIssuedOn,
                 };
                 const p = [];
                 p.push(models.invoice.findAll(
                   {
                     raw: true,
                     attributes: [
-                      [sequelize.fn('SUM', sequelize.col('valIss')), 'alreadyPaid'],
+                      [sequelize.fn('SUM', sequelize.col('tributesIssAmount')), 'alreadyPaid'],
                     ],
                     where: {
-                      estado: 2,
+                      status: 2,
                       ...where,
                     },
                   },
@@ -228,12 +228,12 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
                   {
                     raw: true,
                     attributes: [
-                      [sequelize.fn('SUM', sequelize.col('valIss')), 'expectedMonthIncome'],
+                      [sequelize.fn('SUM', sequelize.col('tributesIssAmount')), 'expectedMonthIncome'],
                     ],
                     where: {
                       [Op.or]: [
-                        { estado: 0 },
-                        { estado: 2 },
+                        { status: 0 },
+                        { status: 2 },
                       ],
                       ...where,
                     },
@@ -254,10 +254,10 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
           const year = now.getFullYear();
           const firstDay = new Date(year, 0, 1);
           const lastDay = new Date(year, 11, 31);
-          const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+          const provisionIssuedOn = { [Op.between]: [firstDay, lastDay] };
           const where = {
-            codTributMunicipio: city.get('codigoIbge'),
-            dataPrestacao,
+            provisionCityServiceLocation: city.get('code'),
+            provisionIssuedOn,
           };
           const p = [];
           const yearRevenue = {};
@@ -266,8 +266,8 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
             {
               raw: true,
               attributes: [
-                [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
-                [sequelize.fn('SUM', sequelize.col('valIss')), 'amountReceived'],
+                [sequelize.fn('MONTH', sequelize.col('provisionIssuedOn')), 'month'],
+                [sequelize.fn('SUM', sequelize.col('tributesIssAmount')), 'amountReceived'],
               ],
               group: ['month'],
               where,
@@ -284,19 +284,19 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
             {
               raw: true,
               attributes: [
-                [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
-                [sequelize.fn('SUM', sequelize.col('valServicos')), 'valServicos'],
+                [sequelize.fn('MONTH', sequelize.col('provisionIssuedOn')), 'month'],
+                [sequelize.fn('SUM', sequelize.col('provisionServicesAmount')), 'provisionServicesAmount'],
               ],
               group: ['month'],
               where: {
                 ...where,
-                exigibilidadeISS: 3,
+                tributesIssExigibility: 3,
               },
             },
           ).then((aggregate) => {
             aggregate.map((item) => {
-              const valServicos = parseInt(item.valServicos, 10) || 0;
-              yearRevenue[item.month].isencaoIss = Math.round(valServicos * 0.02);
+              const provisionServicesAmount = parseInt(item.provisionServicesAmount, 10) || 0;
+              yearRevenue[item.month].isencaoIss = Math.round(provisionServicesAmount * 0.02);
             });
           }));
           return Promise.all(p)
@@ -314,11 +314,11 @@ const getCity = async req => models.municipio.findByPk(req.params.id,
 
 const getDailyIssuing = async (req) => {
   const { month, year } = req.query;
-  let dataPrestacao;
+  let provisionIssuedOn;
   if (month && year) {
     const firstDay = new Date(year, month - 1, 1);
     const lastDay = new Date(year, month, 0);
-    dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+    provisionIssuedOn = { [Op.between]: [firstDay, lastDay] };
   }
   return models.municipio.findByPk(req.params.id, {})
     .then(async (city) => {
@@ -327,19 +327,19 @@ const getDailyIssuing = async (req) => {
         data.city = city;
 
         const where = {
-          codTributMunicipio: city.get('codigoIbge'),
+          provisionCityServiceLocation: city.get('code'),
         };
-        if (dataPrestacao) {
-          where.dataPrestacao = dataPrestacao;
+        if (provisionIssuedOn) {
+          where.provisionIssuedOn = provisionIssuedOn;
         }
         return models.invoice.findAll(
           {
             raw: true,
             attributes: [
-              'dataPrestacao',
-              [sequelize.fn('COUNT', sequelize.col('txId')), 'emittedInvoicesCount'],
+              'provisionIssuedOn',
+              [sequelize.fn('COUNT', sequelize.col('invoiceCode')), 'emittedInvoicesCount'],
             ],
-            group: ['dataPrestacao'],
+            group: ['provisionIssuedOn'],
             where,
           },
         ).then((inv) => {
@@ -361,7 +361,7 @@ const getStatusSplit = async (req) => {
     4 - last 7 days
     */
   let { range } = req.query;
-  let dataPrestacao;
+  let provisionIssuedOn;
   range = parseInt(range, 10) || 0;
   if (range) {
     const limitDay = new Date();
@@ -374,7 +374,7 @@ const getStatusSplit = async (req) => {
     } else if (range === 4) {
       limitDay.setDate(limitDay.getDate() - 7);
     }
-    dataPrestacao = { [Op.between]: [limitDay, new Date()] };
+    provisionIssuedOn = { [Op.between]: [limitDay, new Date()] };
   }
   return models.municipio.findByPk(req.params.id, {})
     .then(async (city) => {
@@ -382,19 +382,19 @@ const getStatusSplit = async (req) => {
         const data = {};
         data.city = city;
 
-        const where = { codTributMunicipio: city.get('codigoIbge') };
-        if (dataPrestacao) {
-          where.dataPrestacao = dataPrestacao;
+        const where = { provisionCityServiceLocation: city.get('code') };
+        if (provisionIssuedOn) {
+          where.provisionIssuedOn = provisionIssuedOn;
         }
 
         return models.invoice.findAll(
           {
             raw: true,
             attributes: [
-              'estado',
-              [sequelize.fn('COUNT', sequelize.col('txId')), 'count'],
+              'status',
+              [sequelize.fn('COUNT', sequelize.col('invoiceCode')), 'count'],
             ],
-            group: ['estado'],
+            group: ['status'],
             where,
           },
         ).then((inv) => {
@@ -402,7 +402,7 @@ const getStatusSplit = async (req) => {
           const status = {};
           inv.forEach((item) => {
             count += item.count;
-            status[item.estado] = item.count;
+            status[item.status] = item.count;
           });
 
           data.statusSplit = { count, status };
@@ -419,14 +419,14 @@ const getPastRevenue = async (req) => {
   const { year } = req.query;
   const firstDay = new Date(year, 0, 1);
   const lastDay = new Date(year, 11, 31);
-  const dataPrestacao = { [Op.between]: [firstDay, lastDay] };
+  const provisionIssuedOn = { [Op.between]: [firstDay, lastDay] };
 
   return models.municipio.findByPk(req.params.id, {})
     .then(async (city) => {
       if (city) {
         const where = {
-          codTributMunicipio: city.get('codigoIbge'),
-          dataPrestacao,
+          provisionCityServiceLocation: city.get('code'),
+          provisionIssuedOn,
         };
         const data = {};
         const promises = [];
@@ -435,8 +435,8 @@ const getPastRevenue = async (req) => {
           {
             raw: true,
             attributes: [
-              [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
-              [sequelize.fn('SUM', sequelize.col('valIss')), 'amountReceived'],
+              [sequelize.fn('MONTH', sequelize.col('provisionIssuedOn')), 'month'],
+              [sequelize.fn('SUM', sequelize.col('tributesIssAmount')), 'amountReceived'],
             ],
             group: ['month'],
             where,
@@ -453,19 +453,19 @@ const getPastRevenue = async (req) => {
           {
             raw: true,
             attributes: [
-              [sequelize.fn('MONTH', sequelize.col('dataPrestacao')), 'month'],
-              [sequelize.fn('SUM', sequelize.col('valServicos')), 'valServicos'],
+              [sequelize.fn('MONTH', sequelize.col('provisionIssuedOn')), 'month'],
+              [sequelize.fn('SUM', sequelize.col('provisionServicesAmount')), 'provisionServicesAmount'],
             ],
             group: ['month'],
             where: {
               ...where,
-              exigibilidadeISS: 3,
+              tributesIssExigibility: 3,
             },
           },
         ).then((aggregate) => {
           aggregate.map((obj) => {
-            const valServicos = parseInt(obj.valServicos, 10) || 0;
-            data[obj.month].isencaoIss = Math.round(valServicos * 0.02);
+            const provisionServicesAmount = parseInt(obj.provisionServicesAmount, 10) || 0;
+            data[obj.month].isencaoIss = Math.round(provisionServicesAmount * 0.02);
           });
         }));
 

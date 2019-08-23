@@ -40,13 +40,13 @@ const listCompanies = async (req) => {
 };
 
 const getCompany = async req =>
-  // search by cnpj
+  // search by taxNumber
   models.empresa.findByPk(req.params.id)
-    .then((companyByCnpj) => {
-      if (companyByCnpj) {
-        return { code: 200, data: companyByCnpj };
-      }      
-      throw new errors.NotFoundError('Company', `CNPJ ${req.params.id}`);
+    .then((companyBytaxNumber) => {
+      if (companyBytaxNumber) {
+        return { code: 200, data: companyBytaxNumber };
+      }
+      throw new errors.NotFoundError('Company', `taxNumber ${req.params.id}`);
     });
 
 

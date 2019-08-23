@@ -1,7 +1,7 @@
 // Regiao
 export default function (sequelize, DataTypes) {
   const regiao = sequelize.define('regiao', {
-    nomeRegiao: {
+    nameRegiao: {
       type: DataTypes.STRING(65),
       allowNull: false,
       primaryKey: true,

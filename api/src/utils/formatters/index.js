@@ -15,16 +15,16 @@ formatters.CPF = (cpf) => {
 
 
 /**
- * Formats a CNPJ if it is not formatted, and returns it
- * @param   {String} cnpj - An unformatted or formatted CNPJ
- * @returns {String} A formatted CNPJ
+ * Formats a taxNumber if it is not formatted, and returns it
+ * @param   {String} taxNumber - An unformatted or formatted taxNumber
+ * @returns {String} A formatted taxNumber
  */
-formatters.CNPJ = (cnpj) => {
-  // Check CNPJ format
-  if (/[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}-[0-9]{2}/.test(cnpj)) {
+formatters.taxNumber = (taxNumber) => {
+  // Check taxNumber format
+  if (/[0-9]{2}\.[0-9]{3}\.[0-9]{3}\/[0-9]{4}-[0-9]{2}/.test(taxNumber)) {
     return false;
   }
-  return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5, 8)}/${cnpj.slice(8, 12)}-${cnpj.slice(12, 14)}`;
+  return `${taxNumber.slice(0, 2)}.${taxNumber.slice(2, 5)}.${taxNumber.slice(5, 8)}/${taxNumber.slice(8, 12)}-${taxNumber.slice(12, 14)}`;
 };
 
 export default formatters;
