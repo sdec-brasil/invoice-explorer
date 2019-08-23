@@ -1,13 +1,13 @@
-// repasse
+// Repasse
 export default function (sequelize, DataTypes) {
   const repasse = sequelize.define('repasse', {
-    code: {
+    ibgeCode: {
       type: DataTypes.STRING(7),
       primaryKey: true,
       allowNull: false,
     },
     notaPagamentoId: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING(32),
       primaryKey: true,
       allowNull: false,
     },
@@ -18,13 +18,13 @@ export default function (sequelize, DataTypes) {
   },
   {
     underscored: false,
-    tableName: 'nota_pagamento',
+    tableName: 'repasse',
     freezeTableName: true,
   });
 
   repasse.associate = (models) => {
-    repasse.belongsTo(models.municipio, { targetKey: 'code', foreignKey: { name: 'code', allowNull: false } });
-    repasse.belongsTo(models.notaPagamento, { targetKey: 'nonce', foreignKey: { name: 'notaPagamentoId', allowNull: false } });
+    repasse.belongsTo(models.municipio, { targetKey: 'code', foreignKey: { name: 'ibgeCode', allowNull: false } });
+    repasse.belongsTo(models.notaPagamento, { targetKey: 'txId', foreignKey: { name: 'notaPagamentoId', allowNull: false } });
   };
 
   return repasse;

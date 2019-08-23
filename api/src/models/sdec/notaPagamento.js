@@ -2,13 +2,21 @@
 export default function (sequelize, DataTypes) {
   const notaPagamento = sequelize.define('nota_pagamento', {
     nonce: {
-      type: DataTypes.INTEGER(),
+      type: DataTypes.INTEGER(11),
       primaryKey: true,
       autoIncrement: true,
     },
-    guid: {
-      type: DataTypes.UUID,
+    txId: {
+      type: DataTypes.STRING(32),
       unique: true,
+    },
+    taxNumber: {
+      type: DataTypes.STRING(14),
+      allowNull: false,
+    },
+    emissorId: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
     },
     dateEmission: {
       type: DataTypes.DATEONLY,
@@ -32,19 +40,11 @@ export default function (sequelize, DataTypes) {
   });
 
   notaPagamento.associate = (models) => {
-    notaPagamento.belongsToMany(models.municipio, {
-      as: 'repasses',
-      through: 'repasse',
-      foreignKey: 'notaPagamentoId',
-      otherKey: 'code',
-    });
-    notaPagamento.hasMany(models.invoice, { foreignKey: 'paymentInscructionsCode' });
-    notaPagamento.belongsTo(models.empresa, { foreignKey: { name: 'taxNumber', allowNull: false } });
-    notaPagamento.belongsTo(models.emissor, { as: 'emittedBy', foreignKey: { name: 'emissorId', allowNull: false } });
+    notaPagamento.belongsTo(models.empresa, { targetKey: 'taxNumber', foreignKey: { name: 'taxNumber', allowNull: false } });
+    notaPagamento.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'emissorId', allowNull: false } });
+    notaPagamento.hasMany(models.invoice, { as: 'invoices', foreignKey: 'paymentInstructionsCode' });
+    notaPagamento.hasMany(models.repasse, { as: 'repasses', sourceKey: 'txId', foreignKey: 'notaPagamentoId' });
   };
-
-  // notaPagamento.belongsTo(models.metodo_pagamento, { primaryKey: { name: 'id_metodo', allowNull: false } });
-
 
   return notaPagamento;
 }

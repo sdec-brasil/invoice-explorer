@@ -27,8 +27,7 @@ export default function (sequelize, DataTypes) {
 
   municipio.associate = (models) => {
     municipio.belongsTo(models.estado, { targetKey: 'sigla', foreignKey: { name: 'uf', allowNull: false } });
-    // municipio.belongsTo(models.regiao, { targetKey: 'nameRegiao', foreignKey: { name: 'nameRegiao', allowNull: false } });
-    municipio.belongsToMany(models.notaPagamento, { through: models.repasse, foreignKey: 'codigoIbge', otherKey: 'notaPagamentoId' });
+    municipio.hasMany(models.repasse, { as: 'repasses', foreignKey: 'ibgeCode' });
   };
 
   return municipio;
