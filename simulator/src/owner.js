@@ -13,27 +13,26 @@ class Owner {
     this.registered = false;
     this.json = {};
     this.json.endBlock = address;
-    this.json.regTrib = fake.utils.rad(1, 4);
-    this.json.razao = fake.empresa.razaoSocial();
-    this.json.fantasia = fake.empresa.nomeFantasia();
-    this.json.cnpj = fake.empresa.identificacao();
-    this.json.logEnd = fake.logradouro();
-    this.json.numEnd = fake.numero();
-    this.json.compEnd = fake.complemento();
-    this.json.bairroEnd = fake.bairro();
-    this.json.cidadeEnd = fake.utils.codMunicipio();
-    this.json.estadoEnd = fake.estado();
-    this.json.cnaes = fake.cnaes();
-    this.json.paisEnd = '';
-    this.json.cepEnd = fake.cep();
+    this.json.taxRegime = fake.utils.rad(1, 4);
+    this.json.name = fake.empresa.razaoSocial();
+    this.json.tradeName = fake.empresa.nomeFantasia();
+    this.json.taxNumber = fake.empresa.identificacao();
+    this.json.street = fake.logradouro();
+    this.json.number = fake.numero();
+    this.json.additionalInformation = fake.complemento();
+    this.json.district = fake.bairro();
+    this.json.city = fake.utils.codMunicipio();
+    this.json.state = fake.estado();
+    this.json.economicAtivites = fake.economicAtivites();
+    this.json.postalCode = fake.cep();
     this.json.email = maybeF(fake.email);
-    this.json.tel = maybeF(fake.telefone);
+    this.json.phoneNumber = maybeF(fake.telefone);
     this.register(master);
   }
 
   constructAsset() {
     return { 
-      name: this.json.cnpj, 
+      name: this.json.taxNumber, 
       open: true, 
       restrict: 'send,receive'
     };
@@ -46,8 +45,8 @@ class Owner {
       const granted = await master.node.grantFrom([master.addr, this.json.endBlock, asset.name + '.activate', 0]);
 
       if (issued && granted) {
-        console.log(`Empresa | TxId: ${issued} | CNPJ: ${this.json.cnpj} | Address: ${this.json.endBlock}`);
-        main.addEmitter(this.json.endBlock, this.json.cnpj);
+        console.log(`Empresa | TxId: ${issued} | taxNumber: ${this.json.taxNumber} | Address: ${this.json.endBlock}`);
+        main.addEmitter(this.json.endBlock, this.json.taxNumber);
       }
     } catch (e) {
       console.log('Error | Gerar endereço e permitir empresa:');

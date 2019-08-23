@@ -3,189 +3,189 @@ module.exports = [
     model: 'estado',
     data: {
       sigla: 'AC',
-      nome: 'Acre',
+      name: 'Acre',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'AL',
-      nome: 'Alagoas',
+      name: 'Alagoas',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'AP',
-      nome: 'Amapá',
+      name: 'Amapá',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'AM',
-      nome: 'Amazonas',
+      name: 'Amazonas',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'BA',
-      nome: 'Bahia',
+      name: 'Bahia',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'CE',
-      nome: 'Ceará',
+      name: 'Ceará',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'DF',
-      nome: 'Distrito Federal',
+      name: 'Distrito Federal',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'ES',
-      nome: 'Espírito Santo',
+      name: 'Espírito Santo',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'GO',
-      nome: 'Goiás',
+      name: 'Goiás',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'MA',
-      nome: 'Maranhão',
+      name: 'Maranhão',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'MT',
-      nome: 'Mato Grosso',
+      name: 'Mato Grosso',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'MS',
-      nome: 'Mato Grosso do Sul',
+      name: 'Mato Grosso do Sul',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'MG',
-      nome: 'Minas Gerais',
+      name: 'Minas Gerais',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'PA',
-      nome: 'Pará',
+      name: 'Pará',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'PB',
-      nome: 'Paraíba',
+      name: 'Paraíba',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'PR',
-      nome: 'Paraná',
+      name: 'Paraná',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'PE',
-      nome: 'Pernambuco',
+      name: 'Pernambuco',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'PI',
-      nome: 'Piauí',
+      name: 'Piauí',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'RJ',
-      nome: 'Rio de Janeiro',
+      name: 'Rio de Janeiro',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'RN',
-      nome: 'Rio Grande do Norte',
+      name: 'Rio Grande do Norte',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'RS',
-      nome: 'Rio Grande do Sul',
+      name: 'Rio Grande do Sul',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'RO',
-      nome: 'Rondônia',
+      name: 'Rondônia',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'RR',
-      nome: 'Roraima',
+      name: 'Roraima',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'SC',
-      nome: 'Santa Catarina',
+      name: 'Santa Catarina',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'SP',
-      nome: 'São Paulo',
+      name: 'São Paulo',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'SE',
-      nome: 'Sergipe',
+      name: 'Sergipe',
     },
   },
   {
     model: 'estado',
     data: {
       sigla: 'TO',
-      nome: 'Tocantins',
+      name: 'Tocantins',
     },
   },
 ];

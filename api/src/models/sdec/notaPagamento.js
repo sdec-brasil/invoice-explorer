@@ -10,11 +10,11 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.UUID,
       unique: true,
     },
-    dataEmissao: {
+    dateEmission: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    valorTotal: {
+    totalValue: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
@@ -33,10 +33,13 @@ export default function (sequelize, DataTypes) {
 
   notaPagamento.associate = (models) => {
     notaPagamento.belongsToMany(models.municipio, {
-      as: 'municipios', through: 'repasse', foreignKey: 'notaPagamentoId', otherKey: 'codigoIbge',
+      as: 'repasses',
+      through: 'repasse',
+      foreignKey: 'notaPagamentoId',
+      otherKey: 'code',
     });
-    notaPagamento.hasMany(models.invoice, { foreignKey: 'notaPagamento' });
-    notaPagamento.belongsTo(models.empresa, { foreignKey: { name: 'cnpj', allowNull: false } });
+    notaPagamento.hasMany(models.invoice, { foreignKey: 'paymentInscructionsCode' });
+    notaPagamento.belongsTo(models.empresa, { foreignKey: { name: 'taxNumber', allowNull: false } });
     notaPagamento.belongsTo(models.emissor, { as: 'emittedBy', foreignKey: { name: 'emissorId', allowNull: false } });
   };
 

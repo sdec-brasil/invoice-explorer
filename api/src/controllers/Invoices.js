@@ -12,7 +12,7 @@ export default class InvoiceController {
     }
   }
 
-  async getByTxId(req, res, next) {
+  async getByinvoiceCode(req, res, next) {
     try {
       const response = await service.getInvoice(req);
       res.status(response.code).send(response.data);

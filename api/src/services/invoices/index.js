@@ -59,13 +59,13 @@ const listInvoices = async (req) => {
 };
 
 const getInvoice = async req => models.invoice.findOne({
-  txId: req.params.txid,
+  invoiceCode: req.params.invoiceCode,
 })
   .then((inv) => {
     if (inv) {
       return { code: 200, data: serializers.invoice.serialize(inv) };
     }
-    throw new errors.NotFoundError('Invoice', `txId ${req.params.txid}`);
+    throw new errors.NotFoundError('Invoice', `invoiceCode ${req.params.invoiceCode}`);
   });
 
 export default {

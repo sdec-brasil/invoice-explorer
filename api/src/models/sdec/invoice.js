@@ -7,63 +7,74 @@ export default function (sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true,
     },
-    txId: {
+    invoiceCode: {
       type: DataTypes.STRING(64),
     },
-    substitui: {
-      type: DataTypes.STRING(64),
-      allowNull: true,
-    },
-    substituidaPor: {
+    substitutes: {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
-    assetName: {
+    substitutedBy: {
       type: DataTypes.STRING(64),
       allowNull: true,
     },
-    // ----- Campos da Prestação:
+    invoiceName: {
+      type: DataTypes.STRING(64),
+      allowNull: true,
+    },
+    // ----- Campos que não estão na documentação:
+    status: {
+      // 0 - pendente,
+      // 1 - atrasado,
+      // 2 - pago,
+      // 3 - substitutesda,
+      // 4 - dados inconsistentes
+      type: DataTypes.TINYINT({ unsigned: true }),
+      allowNull: false,
+      defaultValue: 0,
+    },
+    encryptedBorrower: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     // campo emissor
-    dataPrestacao: {
+    // ----- Campos da Prestação:
+    provisionIssuedOn: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    // campo prefeituraPrestacao
-    // campo codTributMunicipio
-    itemLista: {
-      type: DataTypes.STRING(5),
-      allowNull: false,
-    },
-    codCnae: {
+    // campo provisionCityServiceLocation
+    provisionCnaeCode: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
     // This may need to be a table
-    codServico: {
+    provisionServiceCode: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
-    codNBS: {
+    provisionNbsCode: {
       type: DataTypes.STRING(9),
       allowNull: true,
     },
-    discriminacao: {
+    provisionDescription: {
       type: DataTypes.STRING(2000),
       allowNull: false,
     },
-    valServicos: {
+    provisionServicesAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: false,
     },
-    descontoIncond: {
+    // ----- Campos de Tributos:
+    tributesUnconditionedDiscountAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    descontoCond: {
+    tributesConditionedDiscountAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    exigibilidadeISS: {
+    tributesIssExigibility: {
       // * `1` - Exigível
       // * `2` - Não incidência
       // * `3` - Isenção
@@ -74,34 +85,32 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TINYINT({ unsigned: true }),
       allowNull: false,
     },
-    numProcesso: {
+    tributesProcessNumber: {
       type: DataTypes.STRING(30),
       allowNull: true,
     },
-    valDeducoes: {
+    tributesDeductionsAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    baseCalculo: {
+    tributesCalculationBasis: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: false,
     },
-
-    // ----- Campos de Taxas:
-    issRetido: {
+    tributesIssWithheld: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    respRetencao: {
-      // Informado somente se IssRetido igual a "true".
+    tributesRetentionResponsible: {
+      // Informado somente se tributesIssWithheld igual a "true".
       // A opção “2 – Intermediário” somente poderá ser selecionada
-      // se “CpfCnpjIntermediario” informado.
+      // se "intermediaryTaxNumber" informado.
       //       * `1` - Tomador
       //       * `2` - Intermediário
       type: DataTypes.TINYINT({ unsigned: true }),
       allowNull: true,
     },
-    regimeEspTribut: {
+    tributesSpecialTaxRegime: {
       // * `1` – Microempresa Municipal
       // * `2` – Estimativa
       // * `3` – Sociedade de Profissionais
@@ -111,140 +120,124 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.TINYINT({ unsigned: true }),
       allowNull: true,
     },
-    incentivoFiscal: {
+    tributesTaxBenefit: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
-    aliqServicos: {
+    tributesIssRate: {
       type: DataTypes.DECIMAL(10, 1),
       allowNull: true,
     },
-    valIss: {
+    tributesIssAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: false,
     },
-    valPis: {
+    tributesPisAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valCofins: {
+    tributesCofinsAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valInss: {
+    tributesInssAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valIr: {
+    tributesIrAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valCsll: {
+    tributesCsllAmount: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    outrasRetencoes: {
+    tributesOthersAmountsWithheld: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valTotalTributos: {
+    tributesApproximateTax: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
-    valLiquiNfse: {
+    tributesNetValueNfse: {
       type: DataTypes.BIGINT({ unsigned: true }),
       allowNull: true,
     },
 
     // ----- Campos do Tomador:
-    identificacaoTomador: {
+    borrowerTaxNumber: {
       type: DataTypes.STRING(14),
       allowNull: true,
     },
-    nif: {
+    borrowerNif: {
       type: DataTypes.STRING(40),
       allowNull: true,
     },
-    nomeRazaoTomador: {
+    borrowerName: {
       type: DataTypes.STRING(150),
       allowNull: true,
     },
-    logEnd: {
+    borrowerStreet: {
       type: DataTypes.STRING(125),
       allowNull: true,
     },
-    numEnd: {
+    borrowerNumber: {
       type: DataTypes.STRING(10),
       allowNull: true,
     },
-    compEnd: {
+    borrowerAdditionalInformation: {
       type: DataTypes.STRING(60),
       allowNull: true,
     },
-    bairroEnd: {
+    borrowerDistrict: {
       type: DataTypes.STRING(60),
       allowNull: true,
     },
-    cidadeEnd: {
+    borrowerCity: {
       type: DataTypes.INTEGER({ unsigned: true }),
       allowNull: true,
     },
-    estadoEnd: {
+    borrowerState: {
       type: DataTypes.STRING(2),
       allowNull: true,
     },
-    paisEnd: {
+    borrowerCountry: {
       type: DataTypes.INTEGER({ unsigned: true }),
       allowNull: true,
     },
-    cepEnd: {
+    borrowerPostalCode: {
       type: DataTypes.STRING(8),
       allowNull: true,
     },
-    email: {
+    borrowerEmail: {
       type: DataTypes.STRING(80),
       allowNull: true,
     },
-    tel: {
+    borrowerPhoneNumber: {
       type: DataTypes.STRING(20),
       allowNull: true,
     },
     // ----- Campos do Intermediário:
-    identificacaoIntermed: {
+    intermediaryTaxNumber: {
       type: DataTypes.STRING(14),
       allowNull: true,
     },
-    nomeRazaoIntermed: {
+    intermediaryName: {
       type: DataTypes.STRING(150),
       allowNull: true,
     },
-    cidadeIntermed: {
+    intermediaryCity: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
     // ----- Campos da Construção Civil:
-    codObra: {
+    constructionWorkCode: {
       type: DataTypes.STRING(30),
       allowNull: true,
     },
-    art: {
+    constructionArt: {
       type: DataTypes.STRING(30),
-      allowNull: true,
-    },
-    //
-    // ----- Campos que não estão na documentação:
-    estado: {
-      // 0 - pendente,
-      // 1 - atrasado,
-      // 2 - pago,
-      // 3 - substituida,
-      // 4 - dados inconsistentes
-      type: DataTypes.TINYINT({ unsigned: true }),
-      allowNull: false,
-      defaultValue: 0,
-    },
-    tomadorEncriptado: {
-      type: DataTypes.TEXT,
       allowNull: true,
     },
   },
@@ -256,12 +249,11 @@ export default function (sequelize, DataTypes) {
   });
 
   invoice.associate = (models) => {
-    invoice.belongsTo(models.emissor, { targetKey: 'address', as: 'emittedBy', foreignKey: { name: 'emissor', allowNull: false } });
-    invoice.belongsTo(models.empresa, { targetKey: 'cnpj', foreignKey: { name: 'cnpj', allowNull: false } });
-    invoice.belongsTo(models.notaPagamento, { targetKey: 'guid', foreignKey: { name: 'notaPagamento', allowNull: true } });
-    invoice.belongsTo(models.municipio, { targetKey: 'codigoIbge', foreignKey: { name: 'prefeituraPrestacao', allowNull: false } });
-    invoice.belongsTo(models.municipio, { targetKey: 'codigoIbge', foreignKey: { name: 'codTributMunicipio', allowNull: false } });
-    invoice.belongsTo(models.block, { targetKey: 'block_id', as: 'block', foreignKey: { name: 'blocoConfirmacao', allowNull: true } });
+    invoice.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'emitter', allowNull: false } });
+    invoice.belongsTo(models.empresa, { targetKey: 'taxNumber', foreignKey: { name: 'taxNumber', allowNull: false } });
+    invoice.belongsTo(models.notaPagamento, { targetKey: 'guid', foreignKey: { name: 'paymentInstructionsCode', allowNull: true } });
+    invoice.belongsTo(models.municipio, { targetKey: 'code', foreignKey: { name: 'provisionCityServiceLocation', allowNull: false } });
+    invoice.belongsTo(models.block, { targetKey: 'block_id', as: 'block', foreignKey: { name: 'blockHeight', allowNull: true } });
   };
 
   return invoice;

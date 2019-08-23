@@ -7,7 +7,7 @@ export default function (sequelize, DataTypes) {
       unique: true,
       allowNull: false,
     },
-    nome: {
+    name: {
       type: DataTypes.STRING(30),
       unique: true,
       allowNull: false,

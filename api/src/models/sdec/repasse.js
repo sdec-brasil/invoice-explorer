@@ -1,23 +1,14 @@
 // repasse
 export default function (sequelize, DataTypes) {
   const repasse = sequelize.define('repasse', {
-    // id: {
-    //   type: DataTypes.INTEGER(),
-    //   primaryKey: true,
-    //   autoIncrement: true,
-    // },
-    codigoIbge: {
+    code: {
       type: DataTypes.STRING(7),
       primaryKey: true,
       allowNull: false,
     },
-    // notaPagamentoId: {
-    //   type: DataTypes.UUID,
-    //   primaryKey: true,
-    //   allowNull: false,
-    // },
     notaPagamentoId: {
-      type: DataTypes.INTEGER(),
+      type: DataTypes.UUID,
+      primaryKey: true,
       allowNull: false,
     },
     valor: {
@@ -32,7 +23,7 @@ export default function (sequelize, DataTypes) {
   });
 
   repasse.associate = (models) => {
-    repasse.belongsTo(models.municipio, { foreignKey: { name: 'codigoIbge', allowNull: false } });
+    repasse.belongsTo(models.municipio, { targetKey: 'code', foreignKey: { name: 'code', allowNull: false } });
     repasse.belongsTo(models.notaPagamento, { targetKey: 'nonce', foreignKey: { name: 'notaPagamentoId', allowNull: false } });
   };
 

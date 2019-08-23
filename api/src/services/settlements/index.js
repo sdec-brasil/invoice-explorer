@@ -33,10 +33,10 @@ const listSettlements = async (req) => {
     order: req.query.sort ? sq.sort(req.query.sort) : [],
     include: [{
       model: models.municipio,
-      as: 'municipios',
-      // through: {
-      //   attributes: [],
-      // },
+      as: 'repasses',
+    // through: {
+    // attributes: [],
+    // },
     }],
   }).then((results) => {
     const response = new ResponseList(req, results, filter);
