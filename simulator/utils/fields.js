@@ -66,7 +66,7 @@ const utils = {
   },
   obra: () => (Math.random() * 100000).toFixed(0),
   art: () => (Math.random() * 100000).toFixed(0),
-  economicAtivites: () => {
+  economicActivities: () => {
     cnaeList = []
     for (let i = 0; i < 3; i++){
       cnae = cnaes[Math.floor(Math.random()*cnaes.length)];
@@ -149,7 +149,7 @@ const fields = {
   numero: localizacao.numero,
   estado: localizacao.estado,
 
-  economicAtivites: utils.economicAtivites,
+  economicActivities: utils.economicActivities,
   cnae: utils.cnae,
 
   email: utils.email,

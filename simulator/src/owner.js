@@ -23,7 +23,7 @@ class Owner {
     this.json.district = fake.bairro();
     this.json.city = fake.utils.codMunicipio();
     this.json.state = fake.estado();
-    this.json.economicAtivites = fake.economicAtivites();
+    this.json.economicActivities = fake.economicActivities();
     this.json.postalCode = fake.cep();
     this.json.email = maybeF(fake.email);
     this.json.phoneNumber = maybeF(fake.telefone);
