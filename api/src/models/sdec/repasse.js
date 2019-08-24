@@ -11,7 +11,7 @@ export default function (sequelize, DataTypes) {
       primaryKey: true,
       allowNull: false,
     },
-    valor: {
+    amount: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
@@ -20,6 +20,7 @@ export default function (sequelize, DataTypes) {
     underscored: false,
     tableName: 'repasse',
     freezeTableName: true,
+    timestamps: false,
   });
 
   repasse.associate = (models) => {

@@ -3,5 +3,5 @@ export default {
   'GET /settlements': 'Settlements.get',
 
   // Retorna informações da Nota de Pagamento
-  'GET /settlement/:id': 'Settlements.getById',
+  'GET /settlements/:id': 'Settlements.getById',
 };

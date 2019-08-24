@@ -22,7 +22,7 @@ export default function (sequelize, DataTypes) {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    totalValue: {
+    totalAmount: {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
@@ -37,6 +37,7 @@ export default function (sequelize, DataTypes) {
     underscored: false,
     tableName: 'nota_pagamento',
     freezeTableName: true,
+    timestamps: false,
   });
 
   notaPagamento.associate = (models) => {

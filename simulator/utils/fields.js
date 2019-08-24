@@ -21,6 +21,16 @@ const sz = {
   endBlock: 38,
 };
 
+const cnaes = ['0152-1/01', '9609-2/04',
+               '0810-0/06', '9609-2/08',
+               '2223-4/00', '4921-3/02',
+               '3299-0/06', '2930-1/02',
+               '4530-7/03', '1910-1/00',
+               '5012-2/01', '0710-3/01',
+               '6143-4/00', '0119-9/03',
+               '7711-0/00', '0111-3/03',
+               '8630-5/02'];
+
 const constraint = (str, size) => {
   if (str.length > size) {
     throw new Error('Campo maior do que permitido');
@@ -57,23 +67,16 @@ const utils = {
   obra: () => (Math.random() * 100000).toFixed(0),
   art: () => (Math.random() * 100000).toFixed(0),
   economicAtivites: () => {
-    const rad = utils.getRandomInt;
-    const length = rad(1, 5);
-    const cnaeList = [];
-    for (let i = 0; i < length; i++) {
-      const d = rad(1,99);
-      const gc = rad(1,99);
-      const s = rad(1,99);
-      cnaeList.push(`${d < 10 ? '0' + d : d}.${gc}-${rad(1,9)}/${s < 10 ? '0' + s : s}`);
-    };
+    cnaeList = []
+    for (let i = 0; i < 3; i++){
+      cnae = cnaes[Math.floor(Math.random()*cnaes.length)];
+      if (cnaeList.inclues(cnae)) break;
+      cnaeList.push(cnae);
+    }
     return cnaeList;
   },
   cnae: () => {
-    const rad = utils.getRandomInt;
-    const d = rad(1,99);
-    const gc = rad(1,99);
-    const s = rad(1,99);
-    return `${d < 10 ? '0' + d : d}.${gc}-${rad(1,9)}/${s < 10 ? '0' + s : s}`
+    return cnaes[Math.floor(Math.random()*cnaes.length)];
   },
 };
 
