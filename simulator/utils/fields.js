@@ -70,7 +70,7 @@ const utils = {
     cnaeList = []
     for (let i = 0; i < 3; i++){
       cnae = cnaes[Math.floor(Math.random()*cnaes.length)];
-      if (cnaeList.inclues(cnae)) break;
+      if (cnaeList.includes(cnae)) break;
       cnaeList.push(cnae);
     }
     return cnaeList;

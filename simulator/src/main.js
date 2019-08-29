@@ -21,7 +21,7 @@ async function publishNote(master, company) {
     const [ address, taxNumber ] = company;
     const note = new Note(address, taxNumber);
     const timestamp = Date.now();
-    const assetname = note.note.json.taxNumber.replace('.', '').replace('/','').replace('-', '') + `/NF-${timestamp}`;
+    const assetname = note.note.json.taxNumber.replace(/\./g, '').replace(/\//g,'').replace(/\-/g, '') + `|NF-${timestamp}`;
     const txid = await master.node.issueFrom([
       address, 
       address, 

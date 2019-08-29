@@ -10,24 +10,28 @@ const maybeF = (f) => {
 
 class Owner {
   constructor(address, master) {
-    this.registered = false;
-    this.json = {};
-    this.json.endBlock = address;
-    this.json.taxRegime = fake.utils.rad(1, 4);
-    this.json.name = fake.empresa.razaoSocial();
-    this.json.tradeName = fake.empresa.nomeFantasia();
-    this.json.taxNumber = fake.empresa.identificacao();
-    this.json.street = fake.logradouro();
-    this.json.number = fake.numero();
-    this.json.additionalInformation = fake.complemento();
-    this.json.district = fake.bairro();
-    this.json.city = fake.utils.codMunicipio();
-    this.json.state = fake.estado();
-    this.json.economicActivities = fake.economicActivities();
-    this.json.postalCode = fake.cep();
-    this.json.email = maybeF(fake.email);
-    this.json.phoneNumber = maybeF(fake.telefone);
-    this.register(master);
+    if (address != null) {
+      this.registered = false;
+      this.json = {};
+      this.json.endBlock = address;
+      this.json.taxRegime = fake.utils.rad(1, 4);
+      this.json.name = fake.empresa.razaoSocial();
+      this.json.tradeName = fake.empresa.nomeFantasia();
+      this.json.taxNumber = fake.empresa.identificacao();
+      this.json.street = fake.logradouro();
+      this.json.number = fake.numero();
+      this.json.additionalInformation = fake.complemento();
+      this.json.district = fake.bairro();
+      this.json.city = fake.utils.codMunicipio();
+      this.json.state = fake.estado();
+      this.json.economicActivities = fake.economicActivities();
+      this.json.postalCode = fake.cep();
+      this.json.email = maybeF(fake.email);
+      this.json.phoneNumber = maybeF(fake.telefone);
+      this.register(master);
+    } else {
+      console.log('??????????');
+    }
   }
 
   constructAsset() {
