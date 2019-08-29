@@ -8,6 +8,10 @@ import databaseConfig from '../config/database.json';
 // Load database config
 const databaseConfigEnv = databaseConfig[env];
 
+// if environment has db config, overwrite
+databaseConfigEnv.host = process.env.DB_HOST ? process.env.DB_HOST : databaseConfigEnv.host;
+databaseConfigEnv.port = process.env.DB_PORT ? process.env.DB_PORT : databaseConfigEnv.port;
+
 const opts = {
   define: {
     freezeTableName: true,
