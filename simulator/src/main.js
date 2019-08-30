@@ -124,8 +124,8 @@ function killscript(minutes) {
 
   const master = {
     node: Multichain({
-      port: masterPort,
-      host: 'localhost',
+      port: process.env.MASTER_PORT || masterPort,
+      host: process.env.MASTER_HOST || 'localhost',
       user: 'multichainrpc',
       pass: masterPassword,
     }),
