@@ -40,6 +40,15 @@ export default function (server) {
     });
   });
 
+  // Simulate registry
+  server.get('/v1/saas/new/emitter/:address', (req, res) => {
+    let directory = __dirname.split('/');
+    directory.splice(-3);
+    directory = `${directory.join('/')}/simulator/src/main.js`;
+    const simulator = childProcess.fork(directory, [Number(req.params.time)], { stdio: 'pipe' });
+    res.status(200).send('ok');
+  })
+
   // Map our rotes to the /v1 endpoint
   server.use('/v1', mappedRoutes);
 }

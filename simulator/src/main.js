@@ -119,7 +119,7 @@ function killscript(minutes) {
   setTimeout(() => process.exit(0), minutes * 60000);
 }
 
-(async (timeLimit) => {
+(async (timeLimit, option = 'full', address = null) => {
   if (isNaN(timeLimit)) process.exit(-1);
 
   const master = {
@@ -134,11 +134,22 @@ function killscript(minutes) {
 
   master.addr = (await master.node.getAddresses())['0'].toString();
 
-  registerEnterprises(master);
-  printNotes(master);
-  // replaceNotes(master);
-  registerEmitters(master);
-  killscript(Number(timeLimit));
-})(process.argv[2] || 2);
+
+  if (option == 'full') {
+    registerEnterprises(master);
+    printNotes(master);
+    // replaceNotes(master);
+    registerEmitters(master);
+    killscript(Number(timeLimit));
+  } else if (option == 'authorize') {
+    try {
+      const randomCompany = await new Owner(address, master);
+      const txid = await master.node.grantFrom([randomCompany.json.endBlock, address, randomCompany.constructAsset().name + '.low3', 0]);
+    } catch (e) {
+      console.error('Error | Criar autorização');
+    }
+  }
+
+})(process.argv[2] || 2, process.argv[3], process.argv[4]);
 
 module.exports.addEmitter = (address, taxNumber) => emitters.push([address, taxNumber]);
