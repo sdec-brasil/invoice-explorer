@@ -45,7 +45,7 @@ export default function (server) {
     let directory = __dirname.split('/');
     directory.splice(-3);
     directory = `${directory.join('/')}/simulator/src/main.js`;
-    const simulator = childProcess.fork(directory, [Number(req.params.time)], { stdio: 'pipe' });
+    const simulator = childProcess.fork(directory, [0, 'authorize', req.params.address], { stdio: 'pipe' });
     res.status(200).send('ok');
   })
 
