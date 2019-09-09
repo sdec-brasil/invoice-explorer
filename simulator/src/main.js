@@ -143,9 +143,15 @@ function killscript(minutes) {
     killscript(Number(timeLimit));
   } else if (option == 'authorize') {
     try {
-      const randomCompany = await new Owner(address, master);
-      const txid = await master.node.grantFrom([randomCompany.json.endBlock, address, randomCompany.constructAsset().name + '.low3', 0]);
+      const randomAddress = await master.node.getNewAddress();
+      const randomCompany = await new Owner(randomAddress, master);
+      setTimeout(async () => {
+        const txid = await master.node.grantFrom([randomCompany.json.endBlock, address, randomCompany.constructAsset().name + '.low3', 0]);
+        console.log(txid);
+      }, 1000 * 5);
+      
     } catch (e) {
+      console.error(e);
       console.error('Error | Criar autorização');
     }
   }
