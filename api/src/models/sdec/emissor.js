@@ -16,7 +16,7 @@ export default function (sequelize, DataTypes) {
   });
 
   emissor.associate = (models) => {
-    emissor.belongsToMany(models.empresa, { as: 'Empresas', through: 'emissorEmpresa' });
+    emissor.belongsToMany(models.empresa, { as: 'Empresas', through: 'emissorEmpresa', foreignKey: 'emitterAddress' });
   };
 
   return emissor;

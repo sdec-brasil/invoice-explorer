@@ -20,18 +20,11 @@ const listEmitters = (req) => {
 
   treatNestedFilters(filter, where);
 
-  return models.emissor.findAndCountAll({
+  return models.emissorEmpresa.findAndCountAll({
     offset: parseInt(req.query.offset, 10) || 0,
     limit: parseInt(req.query.limit, 10) || limitSettings.invoice.get,
     where,
     order: req.query.sort ? sq.sort(req.query.sort) : [],
-    include: [{
-      model: models.empresa,
-      as: 'Empresas',
-      through: {
-        attributes: [],
-      },
-    }],
   }).then((results) => {
     const response = new ResponseList(req, results, filter);
     return { code: 200, data: response.value() };
