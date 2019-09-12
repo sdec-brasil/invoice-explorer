@@ -134,7 +134,6 @@ function killscript(minutes) {
 
   master.addr = (await master.node.getAddresses())['0'].toString();
 
-
   if (option == 'full') {
     registerEnterprises(master);
     printNotes(master);
@@ -146,6 +145,7 @@ function killscript(minutes) {
       const randomAddress = await master.node.getNewAddress();
       const randomCompany = await new Owner(randomAddress, master);
       setTimeout(async () => {
+        console.log(`granting from ${randomAddress} to ${address}`)
         const txid = await master.node.grantFrom([randomCompany.json.endBlock, address, randomCompany.constructAsset().name + '.low3', 0]);
         console.log(txid);
       }, 1000 * 5);

@@ -3,7 +3,10 @@ import redis from 'redis';
 
 // App Imports
 import { configRedis } from '../config/config';
-import { invoiceHub, companyHub, simulatorHub } from './sseHub';
+import {
+  invoiceHub, companyHub, simulatorHub,
+  emitterHub,
+} from './sseHub';
 
 
 export default function () {
@@ -17,6 +20,8 @@ export default function () {
       invoiceHub.event(channel, message);
     } else if (channel.includes('simulator')) {
       simulatorHub.event(channel, message);
+    } else if (channel.includes('emitter')) {
+      emitterHub.event(channel, message);
     }
   });
 

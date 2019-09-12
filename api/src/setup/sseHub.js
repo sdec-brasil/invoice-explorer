@@ -5,6 +5,11 @@ export const companyHub = (() => {
   return hubInstance;
 })();
 
+export const emitterHub = (() => {
+  const hubInstance = new Hub();
+  return hubInstance;
+})();
+
 export const invoiceHub = (() => {
   const hubInstance = new Hub();
   return hubInstance;
