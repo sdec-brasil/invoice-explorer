@@ -72,6 +72,9 @@ export default function (sequelize, DataTypes) {
     empresa.belongsToMany(models.codigosCnae, { as: 'codCnae', through: 'cnaeEmpresa', timestamps: false });
     empresa.belongsToMany(models.emissor, { as: 'emissores', through: 'emissorEmpresa', foreignKey: 'taxNumber' });
     empresa.belongsTo(models.emissor, { targetKey: 'address', foreignKey: { name: 'endBlock', allowNull: false } });
+    empresa.belongsToMany(models.codigosCnae, {
+      as: 'economicActivities', through: 'cnaeEmpresa', foreignKey: 'taxNumber', otherKey: 'cnae',
+    });
   };
 
   return empresa;

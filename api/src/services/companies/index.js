@@ -41,7 +41,16 @@ const listCompanies = async (req) => {
 
 const getCompany = async req =>
   // search by taxNumber
-  models.empresa.findByPk(req.params.id)
+  models.empresa.findByPk(req.params.id, {
+    include: [{
+      model: models.codigosCnae,
+      as: 'economicActivities',
+      //  \/  \/ why wont this work?
+      // through: {
+      // attributes: [],
+      // },
+    }],
+  })
     .then((companyBytaxNumber) => {
       if (companyBytaxNumber) {
         return { code: 200, data: companyBytaxNumber };
