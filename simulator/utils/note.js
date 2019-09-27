@@ -3,19 +3,19 @@ const fake = require('./fields');
 
 const borrower = () => {
   return {
-    "borrowerTaxNumber": null,
-    "borrowerNif": null,
-    "borrowerName": null,
-    "borrowerStreet": null,
-    "borrowerNumber": null,
-    "borrowerAdditionalInformation": null,
-    "borrowerDistrict": null,
-    "borrowerCity": null,
-    "borrowerState": null,
-    "borrowerCountry": null,
-    "borrowerPostalCode": null,
-    "borrowerEmail": null,
-    "borrowerPhoneNumber": null
+    "taxNumber": null,
+    "nif": null,
+    "name": null,
+    "street": null,
+    "number": null,
+    "additionalInformation": null,
+    "district": null,
+    "city": null,
+    "state": null,
+    "country": null,
+    "postalCode": null,
+    "email": null,
+    "phoneNumber": null
   }
 };
 
